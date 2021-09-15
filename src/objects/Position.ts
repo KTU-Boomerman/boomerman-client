@@ -1,37 +1,33 @@
 export default class Position {
-  private x: number;
-  private y: number;
+  private _x: number;
+  private _y: number;
 
   static create(x: number, y: number): Position {
     return new Position(x, y);
   }
 
+  static fromTuple([x, y]: [number, number]): Position {
+    return new Position(x, y);
+  }
+
   constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    this._x = x;
+    this._y = y;
   }
 
-  public getX(): number {
-    return this.x;
+  public get x(): number {
+    return this._x;
   }
 
-  public getY(): number {
-    return this.y;
+  public get y(): number {
+    return this._y;
   }
 
-  public setX(x: number): void {
-    this.x = x;
+  public set x(x: number) {
+    this._x = x;
   }
 
-  public setY(y: number): void {
-    this.y = y;
-  }
-
-  public addX(x: number): void {
-    this.x += x;
-  }
-
-  public addY(y: number): void {
-    this.y += y;
+  public set y(y: number) {
+    this._y = y;
   }
 }

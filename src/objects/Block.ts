@@ -11,10 +11,10 @@ export default class Block extends GameObject {
 
   render(context: CanvasRenderingContext2D): void {
     context.fillStyle = "#000000";
-    context.fillRect(this.position.getX(), this.position.getY(), 20, 20);
+    context.fillRect(this.position.x, this.position.y, 20, 20);
   }
 
   update(deltaTime: number) {
-    this.position.setX(this.position.getX() + 0.2 * deltaTime);
+    this.position.x += 0.2 * deltaTime;
   }
 }

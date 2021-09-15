@@ -1,3 +1,4 @@
+import { isStartable, Startable } from "../interfaces/Startable";
 import GameObject from "../objects/GameObject";
 import Game from "./AbstractGame";
 import Renderer from "./Renderer";
@@ -13,13 +14,30 @@ export default class GameManager {
     this.renderer = renderer;
   }
 
-  public start(): void {
+  public async start(): Promise<void> {
     this.game.beginPlay();
+
+    for (const startable of this.getStartables()) {
+      await startable.start();
+    }
+
     requestAnimationFrame(this.loop.bind(this));
   }
 
   public update(callback: (timestamp: number) => void): void {
     callback(this.deltaTime);
+  }
+
+  private getStartables(): Startable[] {
+    const keys = Object.keys(this.game);
+
+    const gameWithComponents = this.game as unknown as {
+      [key: string]: Startable;
+    };
+
+    return keys
+      .filter((key) => isStartable(gameWithComponents[key]))
+      .map((key) => gameWithComponents[key]);
   }
 
   private getEntities(): GameObject[] {

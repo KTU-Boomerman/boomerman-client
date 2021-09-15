@@ -1,25 +1,37 @@
 import Position from "./Position";
 import GameObject from "./GameObject";
 import { Keyboard } from "../events/Keyboard";
+import { Startable } from "../interfaces/Startable";
 
-export default class Player extends GameObject {
+export default class Player extends GameObject implements Startable {
   private position: Position = new Position(20, 20);
   private speed = 0.2;
+  private image: ImageBitmap | null = null;
 
   constructor(position: Position) {
     super();
     this.position = position;
   }
 
+  async start() {
+    const result = await fetch("../../assets/player.png");
+    const blob = await result.blob();
+    this.image = await createImageBitmap(blob);
+  }
+
   render(context: CanvasRenderingContext2D): void {
     context.fillStyle = "#00FF00";
-    context.fillRect(this.position.getX(), this.position.getY(), 20, 20);
+    if (this.image) {
+      context.drawImage(this.image, this.position.x, this.position.y);
+    } else {
+      context.fillRect(this.position.x, this.position.y, 32, 32);
+    }
   }
 
   update(deltaTime: number) {
     const [dx, dy] = this.getMoveDirection();
-    this.position.addX(dx * this.speed * deltaTime);
-    this.position.addY(dy * this.speed * deltaTime);
+    this.position.x += dx * this.speed * deltaTime;
+    this.position.y += dy * this.speed * deltaTime;
   }
 
   private getMoveDirection(): [number, number] {
@@ -32,7 +44,10 @@ export default class Player extends GameObject {
     if (keyboard.isPressed("KeyD")) x++;
     if (keyboard.isPressed("KeyA")) x--;
 
-    console.log(x, y);
+    if (x != 0 && y != 0) {
+      x *= Math.sqrt(0.5);
+      y *= Math.sqrt(0.5);
+    }
 
     return [x, y];
   }
