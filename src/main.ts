@@ -7,8 +7,6 @@ import Block from "./objects/Block";
 import Position from "./objects/Position";
 import Player from "./objects/Player";
 
-import "./events/Keyboard";
-
 class Game extends AbstractGame {
   block = new Block(new Position(20, 20));
   player = new Player(new Position(60, 20));
@@ -20,5 +18,4 @@ class Game extends AbstractGame {
   }
 }
 
-const gameManager = new GameManager(new Game(), new Renderer());
-gameManager.start();
+new GameManager(new Game(), new Renderer()).start();
