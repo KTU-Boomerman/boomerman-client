@@ -1,4 +1,4 @@
 export default abstract class AbstractGame {
-  public abstract beginPlay(): void;
-  public abstract tick(deltaTime: number): void;
+  public abstract start(): void;
+  public abstract update(deltaTime: number): void;
 }

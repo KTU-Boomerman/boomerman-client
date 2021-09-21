@@ -1,6 +1,6 @@
 import Position from "./Position";
 import GameObject from "./GameObject";
-import { Keyboard } from "../events/Keyboard";
+import { Keyboard } from "../core/Keyboard";
 import { Startable } from "../interfaces/Startable";
 
 export default class Player extends GameObject implements Startable {
@@ -30,6 +30,9 @@ export default class Player extends GameObject implements Startable {
 
   update(deltaTime: number) {
     const [dx, dy] = this.getMoveDirection();
+
+    if (dx == 0 && dy == 0) return;
+
     this.position.x += dx * this.speed * deltaTime;
     this.position.y += dy * this.speed * deltaTime;
   }

@@ -9,5 +9,9 @@
   "devDependencies": {
     "typescript": "^4.3.2",
     "vite": "^2.5.4"
+  },
+  "dependencies": {
+    "@microsoft/signalr": "^5.0.10",
+    "reflect-metadata": "^0.1.13"
   }
 }
