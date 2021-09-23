@@ -1,22 +1,23 @@
-import { EventKeys, EventMap } from "../events/EventMap";
+import { EventMap } from "./EventMap";
 
 export type EventListener<T> = (data: T) => void;
 
-export const createEventEmitter = (): EventEmitter<EventKeys, EventMap> => {
-  return new EventEmitter<EventKeys, EventMap>();
-};
+export class EventEmitter {
+  private static instance: EventEmitter;
+  public static getInstance(): EventEmitter {
+    if (!EventEmitter.instance) {
+      EventEmitter.instance = new EventEmitter();
+    }
+    return EventEmitter.instance;
+  }
 
-export class EventEmitter<
-  TKeys extends string,
-  TEventMap extends { [k in `${TKeys}`]: any }
-> {
   private listeners: {
-    [K in keyof TEventMap]?: Array<EventListener<TEventMap[K]>>;
+    [K in keyof EventMap]?: Array<EventListener<EventMap[K]>>;
   } = {};
 
-  on<K extends keyof TEventMap>(
+  on<K extends keyof EventMap>(
     eventKey: K,
-    listener: EventListener<TEventMap[K]>
+    listener: EventListener<EventMap[K]>
   ) {
     const hasListener = this.listeners[eventKey] != null;
 
@@ -33,9 +34,9 @@ export class EventEmitter<
     };
   }
 
-  off<K extends keyof TEventMap>(
+  off<K extends keyof EventMap>(
     eventKey: K,
-    listenerToRemove: EventListener<TEventMap[K]>
+    listenerToRemove: EventListener<EventMap[K]>
   ) {
     const hasListener = this.listeners[eventKey] != null;
 
@@ -46,9 +47,9 @@ export class EventEmitter<
     );
   }
 
-  once<K extends keyof TEventMap>(
+  once<K extends keyof EventMap>(
     eventKey: K,
-    listener: EventListener<TEventMap[K]>
+    listener: EventListener<EventMap[K]>
   ) {
     const tempListener = (data?: any) => {
       listener(data);
@@ -68,11 +69,9 @@ export class EventEmitter<
     this.listeners = {};
   }
 
-  emit<K extends keyof TEventMap>(
+  emit<K extends keyof EventMap>(
     eventKey: K,
-    ...data: TEventMap[K] extends null | undefined
-      ? [undefined?]
-      : [TEventMap[K]]
+    ...data: EventMap[K] extends null | undefined ? [undefined?] : [EventMap[K]]
   ) {
     const hasListener = this.listeners[eventKey] != null;
 

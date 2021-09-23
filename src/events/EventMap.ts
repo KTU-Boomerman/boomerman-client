@@ -1,8 +1,6 @@
-import Position from "../objects/Position";
+import { PlayerDTO } from "../core/dtos/PlayerDTO";
 
-const eventMap = {
-  "update-position": Position,
-} as const;
-
-export type EventMap = typeof eventMap;
-export type EventKeys = keyof typeof eventMap;
+export type EventMap = {
+  "update-player": { player: PlayerDTO };
+  "update-enemy": { enemy: PlayerDTO };
+};

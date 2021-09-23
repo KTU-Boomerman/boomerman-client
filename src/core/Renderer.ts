@@ -17,17 +17,17 @@ export default class Renderer {
     this.originalHeight = canvas.height;
   }
 
-  clear() {
+  private clear() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  render(objects: Renderable[]) {
+  reset() {
     this.clear();
     this.scale();
+  }
 
-    objects.forEach((object) => {
-      object.render(this.context);
-    });
+  render(renderable: Renderable) {
+    renderable.render(this.context);
   }
 
   private scale() {

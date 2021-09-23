@@ -2,15 +2,19 @@ import Position from "./Position";
 import GameObject from "./GameObject";
 import { Keyboard } from "../core/Keyboard";
 import { Startable } from "../interfaces/Startable";
+import { EventEmitter } from "../events/EventEmitter";
+import { PlayerDTO } from "../core/dtos/PlayerDTO";
 
 export default class Player extends GameObject implements Startable {
+  private id = Number((Math.random() * 1000).toFixed(0));
   private position: Position = new Position(20, 20);
+  private name = "Player" + (Math.random() * 1000).toFixed(0);
   private speed = 0.2;
   private image: ImageBitmap | null = null;
 
-  constructor(position: Position) {
+  constructor(private eventEmitter: EventEmitter) {
     super();
-    this.position = position;
+    console.log("Player created");
   }
 
   async start() {
@@ -28,13 +32,32 @@ export default class Player extends GameObject implements Startable {
     }
   }
 
+  public getId(): number {
+    return this.id;
+  }
+
   update(deltaTime: number) {
+    this.updatePosition(deltaTime);
+  }
+
+  public toDto(): PlayerDTO {
+    return {
+      id: this.id,
+      name: this.name,
+      x: this.position.x,
+      y: this.position.y,
+    };
+  }
+
+  private updatePosition(deltaTime: number) {
     const [dx, dy] = this.getMoveDirection();
 
     if (dx == 0 && dy == 0) return;
 
     this.position.x += dx * this.speed * deltaTime;
     this.position.y += dy * this.speed * deltaTime;
+
+    this.eventEmitter.emit("update-player", { player: this.toDto() });
   }
 
   private getMoveDirection(): [number, number] {

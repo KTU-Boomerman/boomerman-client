@@ -30,4 +30,11 @@ export default class Position {
   public set y(y: number) {
     this._y = y;
   }
+
+  public toData() {
+    return {
+      x: this.x,
+      y: this.y,
+    };
+  }
 }
