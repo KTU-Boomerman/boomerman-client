@@ -1,51 +1,44 @@
 import Position from "./Position";
 import GameObject from "./GameObject";
 import { Keyboard } from "../core/Keyboard";
-import { Startable } from "../interfaces/Startable";
-import { EventEmitter } from "../events/EventEmitter";
-import { PlayerDTO } from "../core/dtos/PlayerDTO";
+import { UpdatePlayerDTO } from "../dtos/UpdatePlayerDTO";
+import Sprite from "./Sprite";
+import Server from "../core/Server";
 
-export default class Player extends GameObject implements Startable {
-  private id = Number((Math.random() * 1000).toFixed(0));
-  private position: Position = new Position(20, 20);
-  private name = "Player" + (Math.random() * 1000).toFixed(0);
-  private speed = 0.2;
-  private image: ImageBitmap | null = null;
+export default class Player extends GameObject {
+  private _id = Number((Math.random() * 1000).toFixed(0));
+  private _position: Position = new Position(20, 20);
+  private _name = "Player" + (Math.random() * 1000).toFixed(0);
+  private _speed = 0.2;
 
-  constructor(private eventEmitter: EventEmitter) {
-    super();
+  constructor(sprite: Sprite) {
+    super(sprite);
     console.log("Player created");
-  }
-
-  async start() {
-    const result = await fetch("../../assets/player.png");
-    const blob = await result.blob();
-    this.image = await createImageBitmap(blob);
   }
 
   render(context: CanvasRenderingContext2D): void {
     context.fillStyle = "#00FF00";
-    if (this.image) {
-      context.drawImage(this.image, this.position.x, this.position.y);
+    if (this.sprite.image) {
+      context.drawImage(this.sprite.image, this._position.x, this._position.y);
     } else {
-      context.fillRect(this.position.x, this.position.y, 32, 32);
+      context.fillRect(this._position.x, this._position.y, 32, 32);
     }
   }
 
-  public getId(): number {
-    return this.id;
+  get id(): number {
+    return this._id;
   }
 
   update(deltaTime: number) {
     this.updatePosition(deltaTime);
   }
 
-  public toDto(): PlayerDTO {
+  toDto(): UpdatePlayerDTO {
     return {
-      id: this.id,
-      name: this.name,
-      x: this.position.x,
-      y: this.position.y,
+      id: this._id,
+      name: this._name,
+      x: this._position.x,
+      y: this._position.y,
     };
   }
 
@@ -54,10 +47,10 @@ export default class Player extends GameObject implements Startable {
 
     if (dx == 0 && dy == 0) return;
 
-    this.position.x += dx * this.speed * deltaTime;
-    this.position.y += dy * this.speed * deltaTime;
+    this._position.x += dx * this._speed * deltaTime;
+    this._position.y += dy * this._speed * deltaTime;
 
-    this.eventEmitter.emit("update-player", { player: this.toDto() });
+    Server.getInstance().updatePlayer(this.toDto());
   }
 
   private getMoveDirection(): [number, number] {

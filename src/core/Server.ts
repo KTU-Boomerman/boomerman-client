@@ -1,31 +1,31 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
-import { EventEmitter } from "../events/EventEmitter";
-import { PlayerDTO } from "./dtos/PlayerDTO";
+import { UpdatePlayerDTO } from "../dtos/UpdatePlayerDTO";
 
 export default class Server {
-  private connection: HubConnection;
+  private static instance: Server;
+  public static getInstance(): Server {
+    if (!Server.instance) {
+      Server.instance = new Server();
+    }
+    return Server.instance;
+  }
 
-  constructor(private eventEmitter: EventEmitter) {
+  private connection: HubConnection;
+  private constructor() {
     this.connection = new HubConnectionBuilder()
       .withUrl("http://localhost:5000/game")
       .build();
-
-    this.eventEmitter.on("update-player", ({ player }) => {
-      this.updatePlayer(player);
-    });
-
-    this.connection.on("UpdateEnemy", (enemy: PlayerDTO) => {
-      // console.log("Updated enemy", enemy);
-      this.eventEmitter.emit("update-enemy", { enemy });
-    });
   }
 
-  start() {
-    this.connection.start();
+  async start() {
+    await this.connection.start();
   }
 
-  updatePlayer(player: PlayerDTO) {
-    // console.log("Updated player", player);
+  updatePlayer(player: UpdatePlayerDTO) {
     this.connection.invoke("UpdatePlayer", player);
+  }
+
+  onUpdateEnemy(callback: (enemy: UpdatePlayerDTO) => void) {
+    this.connection.on("UpdateEnemy", callback);
   }
 }

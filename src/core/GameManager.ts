@@ -1,4 +1,3 @@
-import { isStartable } from "../interfaces/Startable";
 import Game from "./AbstractGame";
 import Renderer from "./Renderer";
 
@@ -15,13 +14,6 @@ export default class GameManager {
 
   public async start(): Promise<void> {
     this.game.start();
-
-    const startables = this.game.renderables.filter(isStartable);
-
-    for (const startable of startables) {
-      await startable.start();
-    }
-
     requestAnimationFrame(this.loop.bind(this));
   }
 

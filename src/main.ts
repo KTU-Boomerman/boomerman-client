@@ -4,28 +4,22 @@ import Renderer from "./core/Renderer";
 import AbstractGame from "./core/AbstractGame";
 import GameManager from "./core/GameManager";
 import Player from "./objects/Player";
-import { EventEmitter } from "./events/EventEmitter";
 import Server from "./core/Server";
 import Enemy from "./objects/Enemy";
 import GameObject from "./objects/GameObject";
-
-const eventEmitter = EventEmitter.getInstance();
-const server = new Server(eventEmitter);
-const player = new Player(eventEmitter);
+import Sprite from "./objects/Sprite";
 
 class Game extends AbstractGame {
+  server = Server.getInstance();
+
   players = new Map<number, GameObject>();
+  sprites = new Map<string, Sprite>();
 
-  // TODO: refactor sprites from player
   async start(): Promise<void> {
-    this.players.set(player.getId(), player);
-    // await player.start();
-
-    eventEmitter.on("update-enemy", async ({ enemy: enemyDto }) => {
-      const enemy = new Enemy(enemyDto);
-      // await enemy.start();
-      this.players.set(enemy.getId(), enemy);
-    });
+    await this.server.start();
+    await this.loadSprites();
+    this.loadPlayer();
+    this.loadEnemies();
   }
 
   update(deltaTime: number): void {
@@ -41,7 +35,26 @@ class Game extends AbstractGame {
       renderer.render(player);
     }
   }
+
+  private async loadSprites(): Promise<void> {
+    this.sprites.set("player", new Sprite("../assets/player.png"));
+
+    await Promise.all(
+      Array.from(this.sprites.values()).map((sprite) => sprite.load())
+    );
+  }
+
+  private loadEnemies() {
+    this.server.onUpdateEnemy((enemyDto) => {
+      const enemy = new Enemy(this.sprites.get("player")!, enemyDto);
+      this.players.set(enemy.id, enemy);
+    });
+  }
+
+  private loadPlayer() {
+    const newPlayer = new Player(this.sprites.get("player")!);
+    this.players.set(newPlayer.id, newPlayer);
+  }
 }
 
 new GameManager(new Game(), new Renderer()).start();
-server.start();

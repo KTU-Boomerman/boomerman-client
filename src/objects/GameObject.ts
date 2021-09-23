@@ -1,11 +1,11 @@
 import Renderable from "../interfaces/Renderable";
 import { Startable } from "../interfaces/Startable";
 import Updatable from "../interfaces/Updatable";
+import Sprite from "./Sprite";
 
-export default abstract class GameObject
-  implements Renderable, Updatable, Startable
-{
-  public abstract start(): void | Promise<void>;
+export default class GameObject implements Renderable, Updatable, Startable {
+  constructor(protected sprite: Sprite) {}
+  public start(): void | Promise<void> {}
   public render(_context: CanvasRenderingContext2D): void {}
   public update(_deltaTime: number): void {}
 }
