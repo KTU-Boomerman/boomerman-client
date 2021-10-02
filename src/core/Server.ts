@@ -4,10 +4,7 @@ import { UpdatePlayerDTO } from "../dtos/UpdatePlayerDTO";
 export default class Server {
   private static instance: Server;
   public static getInstance(): Server {
-    if (!Server.instance) {
-      Server.instance = new Server();
-    }
-    return Server.instance;
+    return Server.instance ?? (Server.instance = new Server());
   }
 
   private connection: HubConnection;

@@ -2,7 +2,7 @@ import Position from "./Position";
 import GameObject from "./GameObject";
 import { Startable } from "../interfaces/Startable";
 import { UpdatePlayerDTO } from "../dtos/UpdatePlayerDTO";
-import Sprite from "./Sprite";
+import Sprite from "../sprite/Sprite";
 
 export default class Enemy extends GameObject implements Startable {
   private _id: number = Number((Math.random() * 1000).toFixed(0));
@@ -26,12 +26,7 @@ export default class Enemy extends GameObject implements Startable {
   }
 
   render(context: CanvasRenderingContext2D): void {
-    context.fillStyle = "#00FF00";
-    if (this.sprite.image) {
-      context.drawImage(this.sprite.image, this._position.x, this._position.y);
-    } else {
-      context.fillRect(this._position.x, this._position.y, 32, 32);
-    }
+    this.sprite.draw(context, this._position);
   }
 
   public toDto(): UpdatePlayerDTO {

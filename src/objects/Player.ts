@@ -2,8 +2,8 @@ import Position from "./Position";
 import GameObject from "./GameObject";
 import { Keyboard } from "../core/Keyboard";
 import { UpdatePlayerDTO } from "../dtos/UpdatePlayerDTO";
-import Sprite from "./Sprite";
 import Server from "../core/Server";
+import Sprite from "../sprite/Sprite";
 
 export default class Player extends GameObject {
   private _id = Number((Math.random() * 1000).toFixed(0));
@@ -17,12 +17,7 @@ export default class Player extends GameObject {
   }
 
   render(context: CanvasRenderingContext2D): void {
-    context.fillStyle = "#00FF00";
-    if (this.sprite.image) {
-      context.drawImage(this.sprite.image, this._position.x, this._position.y);
-    } else {
-      context.fillRect(this._position.x, this._position.y, 32, 32);
-    }
+    this._sprite.draw(context, this._position);
   }
 
   get id(): number {

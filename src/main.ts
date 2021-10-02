@@ -7,17 +7,16 @@ import Player from "./objects/Player";
 import Server from "./core/Server";
 import Enemy from "./objects/Enemy";
 import GameObject from "./objects/GameObject";
-import Sprite from "./objects/Sprite";
+import SpriteFactory from "./sprite/SpriteFactory";
 
 class Game extends AbstractGame {
   server = Server.getInstance();
+  spriteFactory = new SpriteFactory();
 
   players = new Map<number, GameObject>();
-  sprites = new Map<string, Sprite>();
 
   async start(): Promise<void> {
     await this.server.start();
-    await this.loadSprites();
     this.loadPlayer();
     this.loadEnemies();
   }
@@ -36,23 +35,19 @@ class Game extends AbstractGame {
     }
   }
 
-  private async loadSprites(): Promise<void> {
-    this.sprites.set("player", new Sprite("../assets/player.png"));
+  private async loadEnemies() {
+    const sprite = await this.spriteFactory.createSprite("player");
 
-    await Promise.all(
-      Array.from(this.sprites.values()).map((sprite) => sprite.load())
-    );
-  }
-
-  private loadEnemies() {
     this.server.onUpdateEnemy((enemyDto) => {
-      const enemy = new Enemy(this.sprites.get("player")!, enemyDto);
+      const enemy = new Enemy(sprite, enemyDto);
       this.players.set(enemy.id, enemy);
     });
   }
 
-  private loadPlayer() {
-    const newPlayer = new Player(this.sprites.get("player")!);
+  private async loadPlayer() {
+    const sprite = await this.spriteFactory.createSprite("player");
+
+    const newPlayer = new Player(sprite);
     this.players.set(newPlayer.id, newPlayer);
   }
 }
