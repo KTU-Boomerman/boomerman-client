@@ -16,6 +16,10 @@ export default class Player extends GameObject {
     console.log("Player created");
   }
 
+  async load() {
+    await this._sprite.load();
+  }
+
   render(context: CanvasRenderingContext2D): void {
     this._sprite.draw(context, this._position);
   }

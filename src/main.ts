@@ -36,18 +36,21 @@ class Game extends AbstractGame {
   }
 
   private async loadEnemies() {
-    const sprite = await this.spriteFactory.createSprite("player");
+    const sprite = this.spriteFactory.createSprite("player");
 
-    this.server.onUpdateEnemy((enemyDto) => {
+    // TODO: load on start and update position afterwards
+    this.server.onUpdateEnemy(async (enemyDto) => {
       const enemy = new Enemy(sprite, enemyDto);
+      await enemy.load();
       this.players.set(enemy.id, enemy);
     });
   }
 
   private async loadPlayer() {
-    const sprite = await this.spriteFactory.createSprite("player");
+    const sprite = this.spriteFactory.createSprite("player");
 
     const newPlayer = new Player(sprite);
+    await newPlayer.load();
     this.players.set(newPlayer.id, newPlayer);
   }
 }
