@@ -1,40 +1,43 @@
-export default class Position {
+import { DataTransferable } from "../dtos/DataTransferable";
+import { PositionDTO } from "../dtos/PositionDTO";
+
+export default class Position implements DataTransferable<PositionDTO> {
   private _x: number;
   private _y: number;
 
   static create(x: number, y: number): Position {
-    return new Position(x, y);
+    return new Position({ x, y });
   }
 
-  static fromTuple([x, y]: [number, number]): Position {
-    return new Position(x, y);
+  constructor(position: PositionDTO) {
+    this._x = position.x;
+    this._y = position.y;
   }
 
-  constructor(x: number, y: number) {
-    this._x = x;
-    this._y = y;
-  }
-
-  public get x(): number {
+  get x(): number {
     return this._x;
   }
 
-  public get y(): number {
+  get y(): number {
     return this._y;
   }
 
-  public set x(x: number) {
+  set x(x: number) {
     this._x = x;
   }
 
-  public set y(y: number) {
+  set y(y: number) {
     this._y = y;
   }
 
-  public toData() {
+  toDTO() {
     return {
-      x: this.x,
-      y: this.y,
+      x: this._x,
+      y: this._y,
     };
+  }
+
+  clone(): Position {
+    return new Position({ x: this._x, y: this._y });
   }
 }

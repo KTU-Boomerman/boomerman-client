@@ -1,19 +1,24 @@
 import Position from "./Position";
 import GameObject from "./GameObject";
 import { Keyboard } from "../core/Keyboard";
-import { UpdatePlayerDTO } from "../dtos/UpdatePlayerDTO";
 import Server from "../core/Server";
 import Sprite from "../sprite/Sprite";
+import { DataTransferable } from "../dtos/DataTransferable";
+import { PlayerDTO } from "../dtos/PlayerDTO";
 
-export default class Player extends GameObject {
-  private _id = Number((Math.random() * 1000).toFixed(0));
-  private _position: Position = new Position(20, 20);
-  private _name = "Player" + (Math.random() * 1000).toFixed(0);
+export default class Player
+  extends GameObject
+  implements DataTransferable<PlayerDTO>
+{
+  private _id: string = "";
+  private _position: Position;
   private _speed = 0.2;
 
-  constructor(sprite: Sprite) {
+  constructor(sprite: Sprite, id: string, position: Position) {
     super(sprite);
     console.log("Player created");
+    this._id = id;
+    this._position = position;
   }
 
   async load() {
@@ -21,23 +26,26 @@ export default class Player extends GameObject {
   }
 
   render(context: CanvasRenderingContext2D): void {
+    if (this._position == null) return;
     this._sprite.draw(context, this._position);
   }
 
-  get id(): number {
+  get id() {
     return this._id;
+  }
+
+  set position(position: Position) {
+    this._position = position;
   }
 
   update(deltaTime: number) {
     this.updatePosition(deltaTime);
   }
 
-  toDto(): UpdatePlayerDTO {
+  toDTO() {
     return {
       id: this._id,
-      name: this._name,
-      x: this._position.x,
-      y: this._position.y,
+      position: this._position.toDTO(),
     };
   }
 
@@ -45,11 +53,19 @@ export default class Player extends GameObject {
     const [dx, dy] = this.getMoveDirection();
 
     if (dx == 0 && dy == 0) return;
+    if (this._position == null) return;
 
     this._position.x += dx * this._speed * deltaTime;
     this._position.y += dy * this._speed * deltaTime;
 
-    Server.getInstance().updatePlayer(this.toDto());
+    Server.getInstance()
+      .playerMove(this._position.toDTO())
+      .then(({ isValid, position: originalPositon }) => {
+        if (!isValid && originalPositon != null) {
+          this._position = new Position(originalPositon);
+        }
+      })
+      .catch(console.error);
   }
 
   private getMoveDirection(): [number, number] {
