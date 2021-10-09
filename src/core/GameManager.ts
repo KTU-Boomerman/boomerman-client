@@ -1,5 +1,11 @@
+import Stats from "stats.js";
 import Game from "./AbstractGame";
 import Renderer from "./Renderer";
+
+// TODO: add only in development mode
+const stats = new Stats();
+stats.showPanel(0);
+document.body.appendChild(stats.dom);
 
 export default class GameManager {
   private last: number = 0;
@@ -26,9 +32,13 @@ export default class GameManager {
   }
 
   private loop(timestamp: number): void {
+    stats.begin();
+
     this.game.render(this.renderer);
     this.updateTime(timestamp);
     this.game.update(this.deltaTime);
+
+    stats.end();
     requestAnimationFrame(this.loop.bind(this));
   }
 }

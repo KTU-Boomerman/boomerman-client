@@ -20,10 +20,6 @@ export default class Player
     this._position = position;
   }
 
-  async load() {
-    await this._sprite.load();
-  }
-
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
     this._sprite.draw(context, this._position);

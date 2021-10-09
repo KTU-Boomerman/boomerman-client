@@ -21,6 +21,15 @@ export const sprites: Record<string, SpriteData> = {
   player: {
     file: "../../assets/player.png",
   },
+  grass: {
+    file: "../../assets/grass.png",
+  },
+  wall: {
+    file: "../../assets/wall.png",
+  },
+  wood: {
+    file: "../../assets/wood.png",
+  },
   bomb: {
     file: "../../assets/player.png",
   },
@@ -36,19 +45,30 @@ type SpriteKey = keyof typeof sprites;
 
 // TODO: add logic for animated sprites
 export default class SpriteFactory {
-  private _sprites = new Map<SpriteKey, Sprite>();
+  private _images = new Map<string, ImageBitmap>();
 
   createSprite(spriteKey: SpriteKey): Sprite {
-    if (this._sprites.has(spriteKey)) return this._sprites.get(spriteKey)!;
+    const image = this._images.get(spriteKey)!;
 
-    const { file, isAnimated } = sprites[spriteKey];
+    const { isAnimated } = sprites[spriteKey];
 
     const sprite = isAnimated
-      ? new AnimatedSprite(file)
-      : new StaticSprite(file);
-
-    this._sprites.set(spriteKey, sprite);
+      ? new AnimatedSprite(image)
+      : new StaticSprite(image);
 
     return sprite;
+  }
+
+  async loadImages(): Promise<void> {
+    for (const [key, { file }] of Object.entries(sprites)) {
+      const image = await this.loadImage(file);
+      this._images.set(key, image);
+    }
+  }
+
+  private async loadImage(filePath: string): Promise<ImageBitmap> {
+    const result = await fetch(filePath);
+    const blob = await result.blob();
+    return await createImageBitmap(blob);
   }
 }

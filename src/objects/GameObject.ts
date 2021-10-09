@@ -8,5 +8,4 @@ export default class GameObject implements Renderable, Updatable, Startable {
   public start(): void | Promise<void> {}
   public render(_context: CanvasRenderingContext2D): void {}
   public update(_deltaTime: number): void {}
-  public async load(): Promise<void> {}
 }
