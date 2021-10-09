@@ -16,7 +16,6 @@ export default class Player
 
   constructor(sprite: Sprite, id: string, position: Position) {
     super(sprite);
-    console.log("Player created");
     this._id = id;
     this._position = position;
   }

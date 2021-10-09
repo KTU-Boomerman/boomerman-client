@@ -1,4 +1,5 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { GameStateDTO } from "../dtos/GameStateDTO";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
 
@@ -29,13 +30,19 @@ export default class Server {
   }
 
   // on caller joined
-  onJoined(callback: (player: PlayerDTO, playersDto: PlayerDTO[]) => void) {
+  onJoined(
+    callback: (
+      player: PlayerDTO,
+      playersDto: PlayerDTO[],
+      gameStateDto: GameStateDTO
+    ) => void
+  ) {
     this.connection.on("Joined", callback);
   }
 
-  // onGameStateChanged(callback: (gameState: GameStateDTO) => void) {
-  //   this.connection.on("GameStateChanged", callback);
-  // }
+  onGameStateChanged(callback: (gameState: GameStateDTO) => void) {
+    this.connection.on("GameStateChanged", callback);
+  }
 
   onPlayerLeave(callback: (playerId: string) => void) {
     this.connection.on("PlayerLeave", callback);

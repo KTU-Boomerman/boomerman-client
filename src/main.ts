@@ -10,6 +10,7 @@ import SpriteFactory from "./sprite/SpriteFactory";
 import Position from "./objects/Position";
 import { PlayerDTO } from "./dtos/PlayerDTO";
 import Sprite from "./sprite/Sprite";
+import { GameState } from "./objects/GameState";
 
 class Game extends AbstractGame {
   server = Server.getInstance();
@@ -18,13 +19,16 @@ class Game extends AbstractGame {
   player?: Player;
   enemies = new Map<string, Enemy>();
 
+  gameState: GameState = GameState.PlayersJoining;
+
   async start(): Promise<void> {
     await this.server.start();
     this.mapEvents();
   }
 
   update(deltaTime: number): void {
-    if (this.player) this.player.update(deltaTime);
+    if (this.player && this.gameState == GameState.GameInProgress)
+      this.player.update(deltaTime);
 
     for (const player of this.enemies.values()) {
       player.update(deltaTime);
@@ -46,14 +50,18 @@ class Game extends AbstractGame {
 
     this.server.playerJoin();
 
-    this.server.onJoined(async (playerDto, playersDto) => {
+    this.server.onJoined(async (playerDto, playersDto, gameStateDto) => {
       await this.loadPlayer(playerDto, sprite);
       await this.loadEnemies(playersDto, sprite);
+      this.gameState = gameStateDto.gameState;
+    });
+
+    this.server.onGameStateChanged((gameStateDto) => {
+      this.gameState = gameStateDto.gameState;
     });
 
     this.server.onPlayerJoin(async (playerDto) => {
       await this.loadEnemy(playerDto, sprite);
-      console.log("player join", this.enemies.size);
     });
 
     this.server.onPlayerLeave((playerId) => {
