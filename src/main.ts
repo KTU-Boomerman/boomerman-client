@@ -35,8 +35,6 @@ class Game extends AbstractGame {
   server = Server.getInstance();
   spriteFactory = new SpriteFactory();
 
-  isLoading = true;
-
   map: GameObject[][] = [];
 
   player?: Player;
@@ -49,8 +47,6 @@ class Game extends AbstractGame {
     await this.server.start();
     this.mapEvents();
     this.map = this.buildMap();
-
-    this.isLoading = false;
   }
 
   update(deltaTime: number): void {
@@ -63,7 +59,6 @@ class Game extends AbstractGame {
   }
 
   render(renderer: Renderer): void {
-    if (this.isLoading) return;
     renderer.reset();
 
     for (const row of this.map) {
