@@ -5,7 +5,6 @@ export default class StaticSprite implements Sprite {
   private _image: ImageBitmap;
 
   constructor(image: ImageBitmap) {
-    if (image == null) debugger;
     this._image = image;
   }
 

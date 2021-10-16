@@ -27,6 +27,15 @@ document.addEventListener("keyup", (event) => {
 });
 
 const server = Server.getInstance();
+const spriteFactory = new SpriteFactory();
+
+const gameCanvas = document.getElementById("game") as HTMLCanvasElement;
+const gameRenderer = new Renderer(gameCanvas);
+
+const backgroundCanvas = document.getElementById(
+  "background"
+) as HTMLCanvasElement;
+const backgroundRenderer = new Renderer(gameCanvas);
 
 // prettier-ignore
 const map = [
@@ -46,11 +55,13 @@ const map = [
 ];
 
 class Game extends AbstractGame {
-  spriteFactory = new SpriteFactory();
-
   map: GameObject[][] = [];
 
-  player?: Player;
+  player: Player = new Player(
+    spriteFactory.createSprite("player"),
+    Position.create(0, 0),
+    keyboardManager
+  );
   enemies = new Map<string, Enemy>();
   bombs: Bomb[] = [];
 
@@ -58,7 +69,6 @@ class Game extends AbstractGame {
 
   async start(): Promise<void> {
     await server.start();
-    await this.spriteFactory.loadImages();
     this.mapEvents();
     this.map = this.buildMap();
   }
@@ -72,34 +82,18 @@ class Game extends AbstractGame {
     }
   }
 
-  render(renderer: Renderer): void {
-    renderer.reset();
-
-    for (const row of this.map) {
-      for (const cell of row) {
-        renderer.render(cell);
-      }
-    }
-
-    for (const bomb of this.bombs) {
-      renderer.render(bomb);
-    }
-
-    if (this.player) renderer.render(this.player);
-
-    for (const player of this.enemies.values()) {
-      renderer.render(player);
-    }
+  render(): void {
+    gameRenderer.render();
   }
 
   private mapEvents() {
-    const playerSprite = this.spriteFactory.createSprite("player");
-    const bombSprite = this.spriteFactory.createSprite("bomb");
+    const playerSprite = spriteFactory.createSprite("player");
+    const bombSprite = spriteFactory.createSprite("bomb");
 
     server.invoke("PlayerJoin");
 
     server.on("Joined", async (playerDto, playersDto, gameStateDto) => {
-      await this.loadPlayer(playerDto, playerSprite);
+      await this.loadPlayer(playerDto);
       await this.loadEnemies(playersDto, playerSprite);
       this.gameState = gameStateDto.gameState;
     });
@@ -113,6 +107,9 @@ class Game extends AbstractGame {
     });
 
     server.on("PlayerLeave", (playerId) => {
+      const enemy = this.enemies.get(playerId);
+      if (enemy) gameRenderer.remove(enemy);
+
       this.enemies.delete(playerId);
     });
 
@@ -126,9 +123,9 @@ class Game extends AbstractGame {
 
     keyboardManager.on("KeyZ", (state) => {
       if (state == "released") {
-        this.bombs.push(
-          new BasicBomb(bombSprite, this.player!.position.clone())
-        );
+        const bomb = new BasicBomb(bombSprite, this.player.position.clone());
+        this.bombs.push(bomb);
+        gameRenderer.add(bomb);
       }
     });
   }
@@ -142,19 +139,24 @@ class Game extends AbstractGame {
   private loadEnemy(player: PlayerDTO, sprite: Sprite) {
     const enemy = new Enemy(sprite, player);
     this.enemies.set(enemy.id, enemy);
+
+    gameRenderer.add(enemy);
   }
 
-  private loadPlayer(playerDto: PlayerDTO, sprite: Sprite) {
+  private loadPlayer(playerDto: PlayerDTO) {
     const postion = new Position(playerDto.position);
-    this.player = new Player(sprite, playerDto.id, postion, keyboardManager);
+    this.player.id = playerDto.id;
+    this.player.position = postion;
+
+    gameRenderer.add(this.player);
   }
 
   private buildMap(): GameObject[][] {
     const wallBuilder = new WallBuilder().setSprite(
-      this.spriteFactory.createSprite("wall")
+      spriteFactory.createSprite("wall")
     );
     const grassBuilder = new WallBuilder().setSprite(
-      this.spriteFactory.createSprite("grass")
+      spriteFactory.createSprite("grass")
     );
 
     return map.map((row, rowIndex) =>
@@ -171,4 +173,6 @@ class Game extends AbstractGame {
   }
 }
 
-new GameManager(new Game(), new Renderer()).start();
+spriteFactory.loadImages().then(() => {
+  new GameManager(new Game(), gameRenderer).start();
+});

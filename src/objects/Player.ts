@@ -10,24 +10,29 @@ export default class Player
   extends GameObject
   implements DataTransferable<PlayerDTO>
 {
+  RENDER_PRIORITY = 10;
+
   private _id: string = "";
   private _position: Position;
   private _speed = 0.2;
 
   constructor(
     sprite: Sprite,
-    id: string,
     position: Position,
     private keyboardManager: IKeyboardManager
   ) {
     super(sprite);
-    this._id = id;
     this._position = position;
   }
 
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
+    console.log(this.sprite);
     this.sprite.draw(context, this._position);
+  }
+
+  set id(id: string) {
+    this._id = id;
   }
 
   get id() {

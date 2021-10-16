@@ -1,23 +1,28 @@
 import Renderable from "../interfaces/Renderable";
 
 export default class Renderer {
-  private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
+  private renderables: Set<Renderable> = new Set();
 
-  constructor() {
-    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    const context = canvas.getContext("2d")!;
-
-    this.canvas = canvas;
-    this.context = context;
+  constructor(private canvas: HTMLCanvasElement) {
+    this.context = canvas.getContext("2d")!;
   }
 
-  reset() {
+  add(renderable: Renderable) {
+    this.renderables.add(renderable);
+  }
+
+  remove(renderable: Renderable) {
+    this.renderables.delete(renderable);
+  }
+
+  render() {
     this.clear();
-  }
-
-  render(renderable: Renderable) {
-    renderable.render(this.context);
+    for (const renderable of Array.from(this.renderables).sort(
+      (a, b) => a.RENDER_PRIORITY - b.RENDER_PRIORITY
+    )) {
+      renderable.render(this.context);
+    }
   }
 
   private clear() {

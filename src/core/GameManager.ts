@@ -37,7 +37,7 @@ export default class GameManager {
     if (this.isLoading) return;
     stats.begin();
 
-    this.game.render(this.renderer);
+    this.renderer.render();
     this.updateTime(timestamp);
     this.game.update(this.deltaTime);
 
