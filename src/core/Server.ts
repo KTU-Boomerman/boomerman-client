@@ -1,4 +1,6 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { BombDTO } from "../dtos/BombDTO";
+import { CreateBombDTO } from "../dtos/CreateBombDTO";
 import { GameStateDTO } from "../dtos/GameStateDTO";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
@@ -8,11 +10,11 @@ type PositionValidationDTO = { isValid: boolean; position?: PositionDTO };
 type InvokeEventMap = {
   PlayerJoin: () => void;
   PlayerMove: (position: PositionDTO) => PositionValidationDTO;
-  // PlayerPlaceBomb: (bomb: CreateBombDTO) => void;
+  PlaceBomb: (bomb: CreateBombDTO) => void;
 };
 
 type OnEventMap = {
-  PlayerJoined: (player: PlayerDTO) => void;
+  PlayerJoin: (player: PlayerDTO) => void;
   Joined: (
     player: PlayerDTO,
     players: PlayerDTO[],
@@ -21,7 +23,7 @@ type OnEventMap = {
   GameStateChanged: (gameState: GameStateDTO) => void;
   PlayerLeave: (playerId: string) => void;
   PlayerMove: (playerId: string, position: PositionDTO) => void;
-  // PlayerPlaceBomb: (bomb: BombDTO) => void;
+  PlayerPlaceBomb: (bomb: BombDTO) => void;
 };
 
 export default class Server {
