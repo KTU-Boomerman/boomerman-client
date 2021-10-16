@@ -42,7 +42,11 @@ export default class SpriteFactory {
   private _images = new Map<string, ImageBitmap>();
 
   createSprite(spriteKey: SpriteKey): Sprite {
-    const image = this._images.get(spriteKey)!;
+    const image = this._images.get(spriteKey);
+
+    if (!image) {
+      throw new Error(`Image not found for key: ${spriteKey}`);
+    }
 
     const { isAnimated } = sprites[spriteKey];
 
@@ -58,6 +62,8 @@ export default class SpriteFactory {
       const image = await this.loadImage(file);
       this._images.set(key, image);
     }
+
+    console.log(this._images);
   }
 
   private async loadImage(filePath: string): Promise<ImageBitmap> {
