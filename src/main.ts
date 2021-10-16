@@ -11,18 +11,32 @@ import Position from "./objects/Position";
 import { PlayerDTO } from "./dtos/PlayerDTO";
 import Sprite from "./sprite/Sprite";
 import { GameState } from "./objects/GameState";
+import { KeyboardManager } from "./core/managers/KeyboardManager";
+import { BombType } from "./objects/bombs/BombType";
+import Bomb from "./objects/bombs/Bomb";
+
+const keyboardManager = new KeyboardManager();
+
+document.addEventListener("keydown", (event) => {
+  keyboardManager.emit(event.key, "pressed");
+});
+document.addEventListener("keyup", (event) => {
+  keyboardManager.emit(event.key, "released");
+});
+
+const server = Server.getInstance();
 
 class Game extends AbstractGame {
-  server = Server.getInstance();
   spriteFactory = new SpriteFactory();
 
   player?: Player;
   enemies = new Map<string, Enemy>();
+  bombs: Bomb[] = [];
 
   gameState: GameState = GameState.PlayersJoining;
 
   async start(): Promise<void> {
-    await this.server.start();
+    await server.start();
     this.mapEvents();
   }
 
@@ -48,27 +62,27 @@ class Game extends AbstractGame {
   private async mapEvents() {
     const sprite = this.spriteFactory.createSprite("player");
 
-    this.server.playerJoin();
+    server.invoke("PlayerJoin");
 
-    this.server.onJoined(async (playerDto, playersDto, gameStateDto) => {
+    server.on("Joined", async (playerDto, playersDto, gameStateDto) => {
       await this.loadPlayer(playerDto, sprite);
       await this.loadEnemies(playersDto, sprite);
       this.gameState = gameStateDto.gameState;
     });
 
-    this.server.onGameStateChanged((gameStateDto) => {
+    server.on("GameStateChanged", (gameStateDto) => {
       this.gameState = gameStateDto.gameState;
     });
 
-    this.server.onPlayerJoin(async (playerDto) => {
+    server.on("PlayerJoined", async (playerDto) => {
       await this.loadEnemy(playerDto, sprite);
     });
 
-    this.server.onPlayerLeave((playerId) => {
+    server.on("PlayerLeave", (playerId) => {
       this.enemies.delete(playerId);
     });
 
-    this.server.onPlayerMove((playerId, position) => {
+    server.on("PlayerMove", (playerId, position) => {
       const player = this.enemies.get(playerId);
       if (!player) return;
 
@@ -91,7 +105,12 @@ class Game extends AbstractGame {
 
   private async loadPlayer(playerDto: PlayerDTO, sprite: Sprite) {
     const postion = new Position(playerDto.position);
-    const newPlayer = new Player(sprite, playerDto.id, postion);
+    const newPlayer = new Player(
+      sprite,
+      playerDto.id,
+      postion,
+      keyboardManager
+    );
     await newPlayer.load();
 
     this.player = newPlayer;

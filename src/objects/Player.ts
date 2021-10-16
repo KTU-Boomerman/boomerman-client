@@ -1,10 +1,10 @@
 import Position from "./Position";
 import GameObject from "./GameObject";
-import { Keyboard } from "../core/Keyboard";
 import Server from "../core/Server";
 import Sprite from "../sprite/Sprite";
 import { DataTransferable } from "../dtos/DataTransferable";
 import { PlayerDTO } from "../dtos/PlayerDTO";
+import { IKeyboardManager } from "../core/managers/IKeyboardManager";
 
 export default class Player
   extends GameObject
@@ -14,7 +14,12 @@ export default class Player
   private _position: Position;
   private _speed = 0.2;
 
-  constructor(sprite: Sprite, id: string, position: Position) {
+  constructor(
+    sprite: Sprite,
+    id: string,
+    position: Position,
+    private keyboardManager: IKeyboardManager
+  ) {
     super(sprite);
     this._id = id;
     this._position = position;
@@ -58,7 +63,8 @@ export default class Player
     this._position.y += dy * this._speed * deltaTime;
 
     Server.getInstance()
-      .playerMove(this._position.toDTO())
+      // TODO: investigate why needs id or not
+      .invoke("PlayerMove", this._position.toDTO())
       .then(({ isValid, position: originalPositon }) => {
         if (!isValid && originalPositon != null) {
           this._position = new Position(originalPositon);
@@ -68,14 +74,13 @@ export default class Player
   }
 
   private getMoveDirection(): [number, number] {
-    const keyboard = Keyboard.getInstance();
     let x = 0;
     let y = 0;
 
-    if (keyboard.isPressed("KeyW")) y--;
-    if (keyboard.isPressed("KeyS")) y++;
-    if (keyboard.isPressed("KeyD")) x++;
-    if (keyboard.isPressed("KeyA")) x--;
+    if (this.keyboardManager.isPressed("ArrowUp")) y--;
+    if (this.keyboardManager.isPressed("ArrowDown")) y++;
+    if (this.keyboardManager.isPressed("ArrowRight")) x++;
+    if (this.keyboardManager.isPressed("ArrowLeft")) x--;
 
     if (x != 0 && y != 0) {
       x *= Math.sqrt(0.5);

@@ -1,7 +1,30 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { BombDTO } from "../dtos/BombDTO";
+import { CreateBombDTO } from "../dtos/CreateBombDTO";
 import { GameStateDTO } from "../dtos/GameStateDTO";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
+
+type PositionValidationDTO = { isValid: boolean; position?: PositionDTO };
+
+type InvokeEventMap = {
+  PlayerJoin: () => void;
+  PlayerMove: (position: PositionDTO) => PositionValidationDTO;
+  PlayerPlaceBomb: (bomb: CreateBombDTO) => void;
+};
+
+type OnEventMap = {
+  PlayerJoined: (player: PlayerDTO) => void;
+  Joined: (
+    player: PlayerDTO,
+    players: PlayerDTO[],
+    gameStateDto: GameStateDTO
+  ) => void;
+  GameStateChanged: (gameState: GameStateDTO) => void;
+  PlayerLeave: (playerId: string) => void;
+  PlayerMove: (playerId: string, position: PositionDTO) => void;
+  PlayerPlaceBomb: (bomb: BombDTO) => void;
+};
 
 export default class Server {
   private static instance: Server;
@@ -16,45 +39,21 @@ export default class Server {
       .build();
   }
 
+  public async invoke<Event extends keyof InvokeEventMap>(
+    event: Event,
+    ...args: Parameters<InvokeEventMap[Event]>
+  ): Promise<ReturnType<InvokeEventMap[Event]>> {
+    return await this.connection.invoke(event, ...args);
+  }
+
+  public on<Event extends keyof OnEventMap>(
+    event: Event,
+    callback: OnEventMap[Event]
+  ) {
+    this.connection.on(event, callback);
+  }
+
   async start() {
     await this.connection.start();
-  }
-
-  playerJoin() {
-    this.connection.invoke("PlayerJoin");
-  }
-
-  // add other player
-  onPlayerJoin(callback: (player: PlayerDTO) => void) {
-    this.connection.on("PlayerJoin", callback);
-  }
-
-  // on caller joined
-  onJoined(
-    callback: (
-      player: PlayerDTO,
-      playersDto: PlayerDTO[],
-      gameStateDto: GameStateDTO
-    ) => void
-  ) {
-    this.connection.on("Joined", callback);
-  }
-
-  onGameStateChanged(callback: (gameState: GameStateDTO) => void) {
-    this.connection.on("GameStateChanged", callback);
-  }
-
-  onPlayerLeave(callback: (playerId: string) => void) {
-    this.connection.on("PlayerLeave", callback);
-  }
-
-  async playerMove(
-    position: PositionDTO
-  ): Promise<{ isValid: boolean; position?: PositionDTO }> {
-    return await this.connection.invoke("PlayerMove", position);
-  }
-
-  onPlayerMove(callback: (playerId: string, position: PositionDTO) => void) {
-    this.connection.on("PlayerMove", callback);
   }
 }
