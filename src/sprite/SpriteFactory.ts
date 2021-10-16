@@ -21,19 +21,19 @@ type SpriteKey = "player" | "grass" | "wall" | "wood" | "bomb";
 
 export const sprites: Record<SpriteKey, SpriteData> = {
   player: {
-    file: "../../assets/player.png",
+    file: "../../assets/images/player.png",
   },
   grass: {
-    file: "../../assets/grass.png",
+    file: "../../assets/images/grass.png",
   },
   wall: {
-    file: "../../assets/wall.png",
+    file: "../../assets/images/wall.png",
   },
   wood: {
-    file: "../../assets/wood.png",
+    file: "../../assets/images/wood.png",
   },
   bomb: {
-    file: "../../assets/bomb.png",
+    file: "../../assets/images/bomb.png",
   },
 };
 
@@ -62,8 +62,6 @@ export default class SpriteFactory {
       const image = await this.loadImage(file);
       this._images.set(key, image);
     }
-
-    console.log(this._images);
   }
 
   private async loadImage(filePath: string): Promise<ImageBitmap> {

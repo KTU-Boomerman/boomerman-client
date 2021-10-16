@@ -16,6 +16,10 @@ export default class Renderer {
     this.renderables.delete(renderable);
   }
 
+  removeAll() {
+    this.renderables.clear();
+  }
+
   render() {
     this.clear();
     for (const renderable of Array.from(this.renderables).sort(

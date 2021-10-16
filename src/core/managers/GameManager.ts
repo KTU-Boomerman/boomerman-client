@@ -1,6 +1,6 @@
 import Stats from "stats.js";
-import Game from "./AbstractGame";
-import Renderer from "./Renderer";
+import Game from "../AbstractGame";
+import Renderer from "../Renderer";
 
 // TODO: add only in development mode
 const stats = new Stats();

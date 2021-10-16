@@ -27,7 +27,6 @@ export default class Player
 
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
-    console.log(this.sprite);
     this.sprite.draw(context, this._position);
   }
 

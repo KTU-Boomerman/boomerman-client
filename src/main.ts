@@ -2,7 +2,7 @@ import "./style.css";
 
 import Renderer from "./core/Renderer";
 import AbstractGame from "./core/AbstractGame";
-import GameManager from "./core/GameManager";
+import GameManager from "./core/managers/GameManager";
 import Player from "./objects/Player";
 import Server from "./core/Server";
 import Enemy from "./objects/Enemy";
@@ -13,9 +13,9 @@ import Sprite from "./sprite/Sprite";
 import { GameState } from "./objects/GameState";
 import { KeyboardManager } from "./core/managers/KeyboardManager";
 import Bomb from "./objects/bombs/Bomb";
-import WallBuilder from "./objects/walls/WallBuilder";
 import GameObject from "./objects/GameObject";
 import BasicBomb from "./objects/bombs/BasicBomb";
+import { BackgroundManager } from "./core/managers/BackgroundManager";
 
 const keyboardManager = new KeyboardManager();
 
@@ -35,24 +35,8 @@ const gameRenderer = new Renderer(gameCanvas);
 const backgroundCanvas = document.getElementById(
   "background"
 ) as HTMLCanvasElement;
-const backgroundRenderer = new Renderer(gameCanvas);
-
-// prettier-ignore
-const map = [
-  ["w","w","w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","g","g","g","g","g","g","g","g","g","g","g","g","g","g","g","w"],
-  ["w","w","w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"],
-];
+const backgroundRenderer = new Renderer(backgroundCanvas);
+const mapManager = new BackgroundManager(spriteFactory, backgroundRenderer);
 
 class Game extends AbstractGame {
   map: GameObject[][] = [];
@@ -68,9 +52,7 @@ class Game extends AbstractGame {
   gameState: GameState = GameState.PlayersJoining;
 
   async start(): Promise<void> {
-    await server.start();
     this.mapEvents();
-    this.map = this.buildMap();
   }
 
   update(deltaTime: number): void {
@@ -80,10 +62,6 @@ class Game extends AbstractGame {
     for (const player of this.enemies.values()) {
       player.update(deltaTime);
     }
-  }
-
-  render(): void {
-    gameRenderer.render();
   }
 
   private mapEvents() {
@@ -150,29 +128,12 @@ class Game extends AbstractGame {
 
     gameRenderer.add(this.player);
   }
-
-  private buildMap(): GameObject[][] {
-    const wallBuilder = new WallBuilder().setSprite(
-      spriteFactory.createSprite("wall")
-    );
-    const grassBuilder = new WallBuilder().setSprite(
-      spriteFactory.createSprite("grass")
-    );
-
-    return map.map((row, rowIndex) =>
-      row.map((cell, cellIndex) => {
-        const position = Position.create(cellIndex * 32, rowIndex * 32);
-
-        if (cell === "w") {
-          return wallBuilder.setPosition(position).build();
-        }
-
-        return grassBuilder.setPosition(position).build();
-      })
-    );
-  }
 }
 
-spriteFactory.loadImages().then(() => {
-  new GameManager(new Game(), gameRenderer).start();
-});
+(async () => {
+  await server.start();
+  await spriteFactory.loadImages();
+  mapManager.buildBackground();
+  mapManager.render();
+  await new GameManager(new Game(), gameRenderer).start();
+})();
