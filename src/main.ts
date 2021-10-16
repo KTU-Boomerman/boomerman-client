@@ -19,10 +19,10 @@ import GameObject from "./objects/GameObject";
 const keyboardManager = new KeyboardManager();
 
 document.addEventListener("keydown", (event) => {
-  keyboardManager.emit(event.key, "pressed");
+  keyboardManager.emit(event.code, "pressed");
 });
 document.addEventListener("keyup", (event) => {
-  keyboardManager.emit(event.key, "released");
+  keyboardManager.emit(event.code, "released");
 });
 
 const server = Server.getInstance();
