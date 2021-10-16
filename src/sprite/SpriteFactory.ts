@@ -17,7 +17,9 @@ interface AnimatedSpriteData extends StaticSpriteData {
 
 type SpriteData = StaticSpriteData | AnimatedSpriteData;
 
-export const sprites: Record<string, SpriteData> = {
+type SpriteKey = "player" | "grass" | "wall" | "wood" | "bomb";
+
+export const sprites: Record<SpriteKey, SpriteData> = {
   player: {
     file: "../../assets/player.png",
   },
@@ -31,17 +33,9 @@ export const sprites: Record<string, SpriteData> = {
     file: "../../assets/wood.png",
   },
   bomb: {
-    file: "../../assets/player.png",
+    file: "../../assets/bomb.png",
   },
-  repetitiveBomb: {
-    file: "../../assets/player.png",
-  },
-  waveBomb: {
-    file: "../../assets/player.png",
-  },
-} as const;
-
-type SpriteKey = keyof typeof sprites;
+};
 
 // TODO: add logic for animated sprites
 export default class SpriteFactory {
