@@ -1,9 +1,10 @@
 import SpriteFactory from "../../sprite/SpriteFactory";
 import Item from "../Item";
+import Position from "../Position";
 
 export default class WaveBomb extends Item {
-  constructor() {
-    super(new SpriteFactory().createSprite("bomb"));
+  constructor(position: Position) {
+    super(new SpriteFactory().createSprite("bomb"), position);
   }
 
   public explode(): void {

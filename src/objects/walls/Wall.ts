@@ -13,6 +13,6 @@ export default class Wall extends GameObject {
   }
 
   render(context: CanvasRenderingContext2D): void {
-    this._sprite.draw(context, this.position);
+    this.sprite.draw(context, this.position);
   }
 }

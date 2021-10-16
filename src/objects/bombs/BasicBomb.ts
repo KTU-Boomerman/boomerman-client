@@ -1,9 +1,10 @@
-import SpriteFactory from "../../sprite/SpriteFactory";
+import Sprite from "../../sprite/Sprite";
 import Item from "../Item";
+import Position from "../Position";
 
 export default class BasicBomb extends Item {
-  constructor() {
-    super(new SpriteFactory().createSprite("bomb"));
+  constructor(sprite: Sprite, position: Position) {
+    super(sprite, position);
   }
 
   public explode(): void {

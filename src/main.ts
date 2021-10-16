@@ -15,6 +15,7 @@ import { KeyboardManager } from "./core/managers/KeyboardManager";
 import Bomb from "./objects/bombs/Bomb";
 import WallBuilder from "./objects/walls/WallBuilder";
 import GameObject from "./objects/GameObject";
+import BasicBomb from "./objects/bombs/BasicBomb";
 
 const keyboardManager = new KeyboardManager();
 
@@ -80,6 +81,10 @@ class Game extends AbstractGame {
       }
     }
 
+    for (const bomb of this.bombs) {
+      renderer.render(bomb);
+    }
+
     if (this.player) renderer.render(this.player);
 
     for (const player of this.enemies.values()) {
@@ -88,13 +93,14 @@ class Game extends AbstractGame {
   }
 
   private mapEvents() {
-    const sprite = this.spriteFactory.createSprite("player");
+    const playerSprite = this.spriteFactory.createSprite("player");
+    const bombSprite = this.spriteFactory.createSprite("bomb");
 
     server.invoke("PlayerJoin");
 
     server.on("Joined", async (playerDto, playersDto, gameStateDto) => {
-      await this.loadPlayer(playerDto, sprite);
-      await this.loadEnemies(playersDto, sprite);
+      await this.loadPlayer(playerDto, playerSprite);
+      await this.loadEnemies(playersDto, playerSprite);
       this.gameState = gameStateDto.gameState;
     });
 
@@ -103,7 +109,7 @@ class Game extends AbstractGame {
     });
 
     server.on("PlayerJoined", async (playerDto) => {
-      await this.loadEnemy(playerDto, sprite);
+      await this.loadEnemy(playerDto, playerSprite);
     });
 
     server.on("PlayerLeave", (playerId) => {
@@ -116,6 +122,14 @@ class Game extends AbstractGame {
 
       player.position = new Position(position);
       this.enemies.set(playerId, player);
+    });
+
+    keyboardManager.on("KeyZ", (state) => {
+      if (state == "released") {
+        this.bombs.push(
+          new BasicBomb(bombSprite, this.player!.position.clone())
+        );
+      }
     });
   }
 
@@ -132,14 +146,7 @@ class Game extends AbstractGame {
 
   private loadPlayer(playerDto: PlayerDTO, sprite: Sprite) {
     const postion = new Position(playerDto.position);
-    const newPlayer = new Player(
-      sprite,
-      playerDto.id,
-      postion,
-      keyboardManager
-    );
-
-    this.player = newPlayer;
+    this.player = new Player(sprite, playerDto.id, postion, keyboardManager);
   }
 
   private buildMap(): GameObject[][] {

@@ -23,6 +23,6 @@ export default class Enemy extends GameObject {
 
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
-    this._sprite.draw(context, this._position);
+    this.sprite.draw(context, this._position);
   }
 }

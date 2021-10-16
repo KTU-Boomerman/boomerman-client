@@ -27,7 +27,7 @@ export default class Player
 
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
-    this._sprite.draw(context, this._position);
+    this.sprite.draw(context, this._position);
   }
 
   get id() {
@@ -36,6 +36,10 @@ export default class Player
 
   set position(position: Position) {
     this._position = position;
+  }
+
+  get position() {
+    return this._position;
   }
 
   update(deltaTime: number) {
