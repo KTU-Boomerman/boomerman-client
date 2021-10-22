@@ -16,6 +16,7 @@ import Bomb from "./objects/bombs/Bomb";
 import BasicBomb from "./objects/bombs/BasicBomb";
 import { BackgroundManager } from "./core/managers/BackgroundManager";
 import { BombType } from "./objects/BombType";
+import { IKeyboardListener, Key, KeyState } from "./core/managers/IKeyboardManager";
 
 const keyboardManager = new KeyboardManager();
 
@@ -41,7 +42,7 @@ const backgroundManager = new BackgroundManager(
   backgroundRenderer
 );
 
-class Game extends AbstractGame {
+class Game extends AbstractGame implements IKeyboardListener {
   player: Player = new Player(
     spriteFactory.createSprite("player"),
     Position.create(0, 0),
@@ -51,6 +52,9 @@ class Game extends AbstractGame {
   bombs: Bomb[] = [];
 
   gameState: GameState = GameState.PlayersJoining;
+
+  playerSprite = spriteFactory.createSprite("player");
+  bombSprite = spriteFactory.createSprite("bomb");
 
   async start(): Promise<void> {
     this.mapEvents();
@@ -66,14 +70,12 @@ class Game extends AbstractGame {
   }
 
   private mapEvents() {
-    const playerSprite = spriteFactory.createSprite("player");
-    const bombSprite = spriteFactory.createSprite("bomb");
 
     server.invoke("PlayerJoin");
 
     server.on("Joined", async (playerDto, playersDto, gameStateDto) => {
       this.loadPlayer(playerDto);
-      this.loadEnemies(playersDto, playerSprite);
+      this.loadEnemies(playersDto, this.playerSprite);
       this.gameState = gameStateDto.gameState;
     });
 
@@ -82,7 +84,7 @@ class Game extends AbstractGame {
     });
 
     server.on("PlayerJoin", async (playerDto) => {
-      this.loadEnemy(playerDto, playerSprite);
+      this.loadEnemy(playerDto, this.playerSprite);
     });
 
     server.on("PlayerLeave", (playerId) => {
@@ -101,21 +103,21 @@ class Game extends AbstractGame {
     });
 
     server.on("PlayerPlaceBomb", (bombDto) => {
-      const bomb = new BasicBomb(bombSprite, new Position(bombDto.position));
+      const bomb = new BasicBomb(this.bombSprite, new Position(bombDto.position));
       this.bombs.push(bomb);
 
       gameRenderer.add(bomb);
     });
+  }
 
-    keyboardManager.on("KeyZ", async (state) => {
-      if (state == "released") {
-        const bomb = new BasicBomb(bombSprite, this.player.position.clone());
+  onKey(key: Key, state: KeyState): void {
+    if (key == "KeyZ" && state == "pressed") {
+      const bomb = new BasicBomb(this.bombSprite, this.player.position.clone());
 
-        this.bombs.push(bomb);
-        gameRenderer.add(bomb);
-        server.invoke("PlaceBomb", { bombType: BombType.Regular });
-      }
-    });
+      this.bombs.push(bomb);
+      gameRenderer.add(bomb);
+      server.invoke("PlaceBomb", { bombType: BombType.Regular });
+    }
   }
 
   private loadEnemies(players: PlayerDTO[], sprite: Sprite) {
@@ -145,5 +147,10 @@ class Game extends AbstractGame {
   await spriteFactory.loadImages();
   backgroundManager.buildBackground();
   backgroundManager.render();
-  await new GameManager(new Game(), gameRenderer).start();
+
+  const game = new Game();
+
+  keyboardManager.on("KeyZ", game);
+
+  await new GameManager(game, gameRenderer).start();
 })();

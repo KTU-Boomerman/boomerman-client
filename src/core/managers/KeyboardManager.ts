@@ -1,7 +1,7 @@
 import {
+  IKeyboardListener,
   IKeyboardManager,
   Key,
-  KeyListener,
   KeyState,
   USED_KEYS,
 } from "./IKeyboardManager";
@@ -9,21 +9,21 @@ import {
 export class KeyboardManager implements IKeyboardManager {
   private pressedKeys: Set<Key> = new Set();
   private _listeners: {
-    [key in Key]: KeyListener[];
+    [key in Key]: IKeyboardListener[];
   };
 
   constructor() {
     this._listeners = USED_KEYS.reduce(
       (acc, key) => ({ ...acc, [key]: [] }),
-      {} as { [key in Key]: KeyListener[] }
+      {} as { [key in Key]: IKeyboardListener[] }
     );
   }
 
-  public on(key: Key, listener: KeyListener): void {
+  public on(key: Key, listener: IKeyboardListener): void {
     this._listeners[key].push(listener);
   }
 
-  public off(key: Key, listener: KeyListener): void {
+  public off(key: Key, listener: IKeyboardListener): void {
     const listeners = this._listeners[key];
     const index = listeners.indexOf(listener);
     if (index !== -1) {
@@ -42,8 +42,9 @@ export class KeyboardManager implements IKeyboardManager {
       this.pressedKeys.delete(key);
     }
 
-    const listeners = this._listeners[key];
-    listeners.forEach((listener) => listener(state));
+    this._listeners[key].forEach((listener) => 
+      listener.onKey(key, state)
+    );
   }
 
   public isPressed(key: Key): boolean {

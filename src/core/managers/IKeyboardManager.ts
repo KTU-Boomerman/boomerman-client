@@ -12,11 +12,13 @@ export type Key = typeof USED_KEYS[number];
 
 export type KeyState = "pressed" | "released";
 
-export type KeyListener = (state: KeyState) => void;
+export interface IKeyboardListener {
+  onKey: (key: Key, state: KeyState) => void;
+}
 
 export interface IKeyboardManager {
-  on(key: Key, listener: KeyListener): void;
-  off(key: Key, listener: KeyListener): void;
+  on(key: Key, listener: IKeyboardListener): void;
+  off(key: Key, listener: IKeyboardListener): void;
   emit(key: string, state: KeyState): void;
   isPressed(key: Key): boolean;
   isReleased(key: Key): boolean;
