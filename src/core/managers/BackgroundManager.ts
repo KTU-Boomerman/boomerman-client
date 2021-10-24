@@ -1,3 +1,4 @@
+import { inject, injectable } from "tsyringe";
 import defaultMap from "../../../assets/maps/default";
 import GameObject from "../../objects/GameObject";
 import Position from "../../objects/Position";
@@ -6,12 +7,13 @@ import SpriteFactory from "../../sprite/SpriteFactory";
 import Renderer from "../Renderer";
 import { IBackgroundManager } from "./IBackgroundManager";
 
+@injectable()
 export class BackgroundManager implements IBackgroundManager {
   private map: GameObject[][] = [];
 
   constructor(
-    private spriteFactory: SpriteFactory,
-    private renderer: Renderer
+    @inject(SpriteFactory) private spriteFactory: SpriteFactory,
+    @inject("BackgroundRenderer") private renderer: Renderer
   ) {}
 
   buildBackground(map: string[][] = defaultMap) {
