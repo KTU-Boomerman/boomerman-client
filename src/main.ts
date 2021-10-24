@@ -37,6 +37,8 @@ container.register<Server>("Server", {
   const gameRenderer = container.resolve<Renderer>("GameRenderer");
   const spriteFactory = container.resolve(SpriteFactory);
   const backgroundManager = container.resolve(BackgroundManager);
+  const keyboardManager =
+    container.resolve<IKeyboardManager>("IKeyboardManager");
 
   await server.start();
   await spriteFactory.loadImages();
@@ -45,6 +47,8 @@ container.register<Server>("Server", {
 
   backgroundManager.buildBackground();
   backgroundManager.render();
+
+  keyboardManager.on("KeyZ", game);
 
   await new GameManager(game, gameRenderer).start();
 })();
