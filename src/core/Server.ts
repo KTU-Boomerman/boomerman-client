@@ -24,6 +24,7 @@ type OnEventMap = {
   PlayerLeave: (playerId: string) => void;
   PlayerMove: (playerId: string, position: PositionDTO) => void;
   PlayerPlaceBomb: (bomb: BombDTO) => void;
+  Notification: (title: string, message: string) => void;
 };
 
 export default class Server {

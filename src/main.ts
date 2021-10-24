@@ -1,4 +1,5 @@
 import "./style.css";
+import "toastify-js/src/toastify.css";
 import "reflect-metadata";
 
 import Renderer from "./core/Renderer";
@@ -10,6 +11,7 @@ import { container } from "tsyringe";
 import { createKeyboardManager } from "./core/managers/KeyboardManager";
 import { IKeyboardManager } from "./core/managers/IKeyboardManager";
 import { Game } from "./core/Game";
+import { showNotification } from './utils/notification';
 
 const backgroundCanvas = document.getElementById(
   "background"
@@ -43,6 +45,8 @@ container.register<Server>("Server", {
   await server.start();
   await spriteFactory.loadImages();
 
+  server.on("Notification", showNotification);
+
   const game = container.resolve(Game);
 
   backgroundManager.buildBackground();
@@ -52,3 +56,4 @@ container.register<Server>("Server", {
 
   await new GameManager(game, gameRenderer).start();
 })();
+

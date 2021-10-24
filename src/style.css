@@ -31,3 +31,7 @@ canvas {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+.toastify { 
+  font-family: 'Courier New', Courier, monospace;
+}
