@@ -1,3 +1,4 @@
+import { singleton } from "tsyringe";
 import AnimatedSprite from "./AnimatedSprite";
 import Sprite from "./Sprite";
 import StaticSprite from "./StaticSprite";
@@ -38,6 +39,7 @@ export const sprites: Record<SpriteKey, SpriteData> = {
 };
 
 // TODO: add logic for animated sprites
+@singleton()
 export default class SpriteFactory {
   private _images = new Map<string, ImageBitmap>();
 

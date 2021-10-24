@@ -32,7 +32,8 @@ describe("Player", () => {
     const sprite = mock<Sprite>();
     keyboardManager = mock<IKeyboardManager>();
     canvasContext = mock<CanvasRenderingContext2D>();
-    player = new Player(sprite, initialPosition, keyboardManager);
+    player = new Player(sprite, initialPosition);
+    player.keyboardManager = keyboardManager;
     player.position = initialPosition.clone();
   });
 
@@ -49,23 +50,23 @@ describe("Player", () => {
   });
 
   it("should not move without initial position", () => {
-    player['_position'] = null as unknown as Position;
+    player["_position"] = null as unknown as Position;
     keyboardManager.isPressed.calledWith("ArrowUp").mockReturnValue(true);
 
     player.update(100);
 
     expect(player.position).toBe(null);
   });
-  
+
   it("should not render without initial position ", () => {
-    player['_position'] = null as unknown as Position;
+    player["_position"] = null as unknown as Position;
     player.render(canvasContext);
-    expect(player['sprite'].draw).not.toBeCalled();
+    expect(player["sprite"].draw).not.toBeCalled();
   });
 
   it("should render", () => {
     player.render(canvasContext);
-    expect(player['sprite'].draw).toBeCalled();
+    expect(player["sprite"].draw).toBeCalled();
   });
 
   it("should move in all directions", () => {
