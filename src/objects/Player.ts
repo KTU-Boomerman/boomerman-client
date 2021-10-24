@@ -15,12 +15,9 @@ export default class Player
   private _id: string = "";
   private _position: Position;
   private _speed = 0.2;
+  private _keyboardManager?: IKeyboardManager;
 
-  constructor(
-    sprite: Sprite,
-    position: Position,
-    private keyboardManager: IKeyboardManager
-  ) {
+  constructor(sprite: Sprite, position: Position) {
     super(sprite);
     this._position = position;
   }
@@ -44,6 +41,10 @@ export default class Player
 
   get position() {
     return this._position;
+  }
+
+  set keyboardManager(keyboardManager: IKeyboardManager) {
+    this._keyboardManager = keyboardManager;
   }
 
   update(deltaTime: number) {
@@ -81,10 +82,10 @@ export default class Player
     let x = 0;
     let y = 0;
 
-    if (this.keyboardManager.isPressed("ArrowUp")) y--;
-    if (this.keyboardManager.isPressed("ArrowDown")) y++;
-    if (this.keyboardManager.isPressed("ArrowRight")) x++;
-    if (this.keyboardManager.isPressed("ArrowLeft")) x--;
+    if (this._keyboardManager?.isPressed("ArrowUp")) y--;
+    if (this._keyboardManager?.isPressed("ArrowDown")) y++;
+    if (this._keyboardManager?.isPressed("ArrowRight")) x++;
+    if (this._keyboardManager?.isPressed("ArrowLeft")) x--;
 
     if (x != 0 && y != 0) {
       x *= Math.sqrt(0.5);

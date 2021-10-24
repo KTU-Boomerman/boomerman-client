@@ -14,7 +14,9 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "types": ["@types/jest"],
   },
-  "include": ["./src"]
+  "include": ["./src/*.ts"],
+  "exclude": ["./src/*.test.ts"] 
 }

@@ -59,3 +59,16 @@ export class KeyboardManager implements IKeyboardManager {
     return USED_KEYS.includes(key as Key);
   }
 }
+
+export const createKeyboardManager = () => {
+  const keyboardManager = new KeyboardManager();
+
+  document.addEventListener("keydown", (event) => {
+    keyboardManager.emit(event.code, "pressed");
+  });
+  document.addEventListener("keyup", (event) => {
+    keyboardManager.emit(event.code, "released");
+  });
+
+  return keyboardManager;
+};
