@@ -3,16 +3,20 @@ import GameObject from "../GameObject";
 import Position from "../Position";
 
 export default class Wall extends GameObject {
-  private isDestructible: boolean;
-  private position: Position;
+  private _isDestructible: boolean;
+  private _position: Position;
 
   constructor(sprite: Sprite, isDestructible: boolean, position: Position) {
     super(sprite);
-    this.isDestructible = isDestructible;
-    this.position = position;
+    this._isDestructible = isDestructible;
+    this._position = position;
+  }
+
+  get isDestructible(): boolean {
+    return this._isDestructible;
   }
 
   render(context: CanvasRenderingContext2D): void {
-    this.sprite.draw(context, this.position);
+    this.sprite.draw(context, this._position);
   }
 }
