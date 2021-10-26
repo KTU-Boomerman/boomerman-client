@@ -18,7 +18,8 @@ interface AnimatedSpriteData extends StaticSpriteData {
 
 type SpriteData = StaticSpriteData | AnimatedSpriteData;
 
-type SpriteKey = "player" | "grass" | "wall" | "wood" | "bomb" | "destructibleWall";
+type SpriteKey = "player" | "grass" | "wall" | "wood" | "bomb" | "destructibleWall" | "bBombPowerup" | "sBombPoweup" |
+    "bHealthPowerup" | "sHealthPowerup" | "bSpeedPowerup" | "sSpeedPowerup";
 
 export const sprites: Record<SpriteKey, SpriteData> = {
   player: {
@@ -39,6 +40,25 @@ export const sprites: Record<SpriteKey, SpriteData> = {
   destructibleWall: {
     file: "../../assets/images/destructibleWall.png",
   },
+  bBombPowerup: {
+    file: "../../assets/images/bBombPowerup.png",
+  },
+  sBombPoweup: {
+    file: "../../assets/images/sBombPoweup.png",
+  },
+  bHealthPowerup: {
+    file: "../../assets/images/bHealthPowerup.png",
+  },
+  sHealthPowerup: {
+    file: "../../assets/images/sHealthPowerup.png",
+  },
+  bSpeedPowerup: {
+    file: "../../assets/images/bSpeedPowerup.png",
+  },
+  sSpeedPowerup: {
+    file: "../../assets/images/sSpeedPowerup.png",
+  },
+
 };
 
 // TODO: add logic for animated sprites
