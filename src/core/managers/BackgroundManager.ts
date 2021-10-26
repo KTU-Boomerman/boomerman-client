@@ -19,9 +19,12 @@ export class BackgroundManager implements IBackgroundManager {
   buildBackground(map: string[][] = defaultMap) {
     this.renderer.removeAll();
 
-    const wallBuilder = new WallBuilder().setSprite(
+    const nonDestructableWallBuilder = new WallBuilder().setSprite(
       this.spriteFactory.createSprite("wall")
-    );
+    ).setIsDestructible(false);
+    const destructibleWallWallBuilder = new WallBuilder().setSprite(
+      this.spriteFactory.createSprite("destructibleWall")
+    ).setIsDestructible(true);
     const grassBuilder = new WallBuilder().setSprite(
       this.spriteFactory.createSprite("grass")
     );
@@ -34,10 +37,16 @@ export class BackgroundManager implements IBackgroundManager {
         const cell = row[x];
         const position = Position.create(x * 32, y * 32);
 
-        if (cell === "w") {
-          this.map[y][x] = wallBuilder.setPosition(position).build();
-        } else {
-          this.map[y][x] = grassBuilder.setPosition(position).build();
+        switch (cell) {
+          case "ndw":
+            this.map[y][x] = nonDestructableWallBuilder.setPosition(position).build();
+            break;
+          case "grs":
+            this.map[y][x] = grassBuilder.setPosition(position).build();
+            break;
+          case "dew":
+            this.map[y][x] = destructibleWallWallBuilder.setPosition(position).build();
+            break;
         }
 
         this.renderer.add(this.map[y][x]);
