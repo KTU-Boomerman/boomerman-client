@@ -18,7 +18,7 @@ interface AnimatedSpriteData extends StaticSpriteData {
 
 type SpriteData = StaticSpriteData | AnimatedSpriteData;
 
-type SpriteKey = "player" | "grass" | "wall" | "wood" | "bomb" | "destructibleWall" | "bBombPowerup" | "sBombPoweup" |
+type SpriteKey = "player" | "grass" | "wall" | "wood" | "bomb" | "destructibleWall" | "bBombPowerup" | "sBombPowerup" |
     "bHealthPowerup" | "sHealthPowerup" | "bSpeedPowerup" | "sSpeedPowerup";
 
 export const sprites: Record<SpriteKey, SpriteData> = {
@@ -43,8 +43,8 @@ export const sprites: Record<SpriteKey, SpriteData> = {
   bBombPowerup: {
     file: "../../assets/images/bBombPowerup.png",
   },
-  sBombPoweup: {
-    file: "../../assets/images/sBombPoweup.png",
+  sBombPowerup: {
+    file: "../../assets/images/sBombPowerup.png",
   },
   bHealthPowerup: {
     file: "../../assets/images/bHealthPowerup.png",
