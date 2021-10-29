@@ -64,15 +64,14 @@ export default class Player
     if (dx == 0 && dy == 0) return;
     if (this._position == null) return;
 
-    this._position.x += dx * this._speed * deltaTime;
-    this._position.y += dy * this._speed * deltaTime;
+    const newPosition = Position.create(this._position.x + dx * this._speed * deltaTime, this._position.y + dy * this._speed * deltaTime)
 
     Server.getInstance()
       // TODO: investigate why needs id or not
-      .invoke("PlayerMove", this._position.toDTO())
-      .then(({ isValid, position: originalPositon }) => {
-        if (!isValid && originalPositon != null) {
-          this._position = new Position(originalPositon);
+      .invoke("PlayerMove", this._position.toDTO(), newPosition.toDTO())
+      .then(({ position : originalPosition}) => {
+        if (originalPosition) {
+          this._position = new Position(originalPosition);
         }
       })
       .catch(console.error);

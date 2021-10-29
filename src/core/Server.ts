@@ -9,7 +9,7 @@ type PositionValidationDTO = { isValid: boolean; position?: PositionDTO };
 
 type InvokeEventMap = {
   PlayerJoin: () => void;
-  PlayerMove: (position: PositionDTO) => PositionValidationDTO;
+  PlayerMove: (originalPosition: PositionDTO, newPosition: PositionDTO) => PositionValidationDTO;
   PlaceBomb: (bomb: CreateBombDTO) => void;
 };
 
