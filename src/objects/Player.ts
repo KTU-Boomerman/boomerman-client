@@ -1,10 +1,10 @@
 import Position from "./Position";
 import GameObject from "./GameObject";
-import Server from "../core/Server";
 import Sprite from "../sprite/Sprite";
 import { DataTransferable } from "../dtos/DataTransferable";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { IKeyboardManager } from "../core/managers/IKeyboardManager";
+import { Game } from "../core/Game";
 
 export default class Player
   extends GameObject
@@ -17,7 +17,7 @@ export default class Player
   private _speed = 0.2;
   private _keyboardManager?: IKeyboardManager;
 
-  constructor(sprite: Sprite, position: Position) {
+  constructor(sprite: Sprite, position: Position, private game: Game) {
     super(sprite);
     this._position = position;
   }
@@ -58,23 +58,21 @@ export default class Player
     };
   }
 
-  private updatePosition(deltaTime: number) {
+  public updatePosition(deltaTime: number) {
     const [dx, dy] = this.getMoveDirection();
 
     if (dx == 0 && dy == 0) return;
     if (this._position == null) return;
 
-    const newPosition = Position.create(this._position.x + dx * this._speed * deltaTime, this._position.y + dy * this._speed * deltaTime)
+    const newPosition = Position.create(
+      this._position.x + dx * this._speed * deltaTime,
+      this._position.y + dy * this._speed * deltaTime
+    );
 
-    Server.getInstance()
-      // TODO: investigate why needs id or not
-      .invoke("PlayerMove", this._position.toDTO(), newPosition.toDTO())
-      .then(({ position : originalPosition}) => {
-        if (originalPosition) {
-          this._position = new Position(originalPosition);
-        }
-      })
-      .catch(console.error);
+    this.game.onPlayerPositionUpdate(
+      this._position.toDTO(),
+      newPosition.toDTO()
+    );
   }
 
   private getMoveDirection(): [number, number] {

@@ -5,11 +5,12 @@ import { GameStateDTO } from "../dtos/GameStateDTO";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
 
-type PositionValidationDTO = { isValid: boolean; position?: PositionDTO };
-
 type InvokeEventMap = {
   PlayerJoin: () => void;
-  PlayerMove: (originalPosition: PositionDTO, newPosition: PositionDTO) => PositionValidationDTO;
+  PlayerMove: (
+    originalPosition: PositionDTO,
+    newPosition: PositionDTO
+  ) => PositionDTO;
   PlaceBomb: (bomb: CreateBombDTO) => void;
 };
 
