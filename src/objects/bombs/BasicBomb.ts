@@ -1,9 +1,9 @@
 import { BombDTO } from "../../dtos/BombDTO";
 import { DataTransferable } from "../../dtos/DataTransferable";
-import Sprite from "../../sprite/Sprite";
 import { BombType } from "../BombType";
 import Item from "../Item";
 import Position from "../Position";
+import Sprite from "../../sprite/Sprite";
 
 export default class BasicBomb
   extends Item

@@ -18,6 +18,9 @@ import {
 import Server from "./Server";
 import Renderer from "./Renderer";
 import SpriteFactory from "../sprite/SpriteFactory";
+import BoomerangBomb from "../objects/bombs/BoomerangBomb";
+import WaveBomb from "../objects/bombs/WaveBomb";
+import PulseBomb from "../objects/bombs/PulseBomb";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -27,18 +30,16 @@ export class Game extends AbstractGame implements IKeyboardListener {
   gameState: GameState;
 
   playerSprite: Sprite;
-  bombSprite: Sprite;
 
   constructor(
     @inject("IKeyboardManager") private keyboardManager: IKeyboardManager,
     @inject("Server") private server: Server,
     @inject("GameRenderer") private gameRenderer: Renderer,
-    @inject(SpriteFactory) private spriteFactory: SpriteFactory
+    @inject(SpriteFactory) public spriteFactory: SpriteFactory
   ) {
     super();
 
     this.playerSprite = this.spriteFactory.createSprite("player");
-    this.bombSprite = this.spriteFactory.createSprite("bomb");
 
     this.gameState = GameState.PlayersJoining;
 
@@ -96,10 +97,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     });
 
     this.server.on("PlayerPlaceBomb", (bombDto) => {
-      const bomb = new BasicBomb(
-        this.bombSprite,
-        new Position(bombDto.position)
-      );
+      const bomb = new BasicBomb(this.spriteFactory.createSprite("regularBomb"), new Position(bombDto.position));
       this.bombs.push(bomb);
 
       this.gameRenderer.add(bomb);
@@ -108,11 +106,32 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
   onKey(key: Key, state: KeyState): void {
     if (key == "KeyZ" && state == "pressed") {
-      const bomb = new BasicBomb(this.bombSprite, this.player.position.clone());
+      const bomb = new BasicBomb(this.spriteFactory.createSprite("regularBomb"), this.player.position.clone());
 
       this.bombs.push(bomb);
       this.gameRenderer.add(bomb);
       this.server.invoke("PlaceBomb", { bombType: BombType.Regular });
+    }
+    if (key == "KeyX" && state == "pressed") {
+      const bomb = new BoomerangBomb(this.spriteFactory.createSprite("boomerangBomb"), this.player.position.clone());
+
+      this.bombs.push(bomb);
+      this.gameRenderer.add(bomb);
+      this.server.invoke("PlaceBomb", { bombType: BombType.Boomerang });
+    }
+    if (key == "KeyC" && state == "pressed") {
+      const bomb = new WaveBomb(this.spriteFactory.createSprite("waveBomb"), this.player.position.clone());
+
+      this.bombs.push(bomb);
+      this.gameRenderer.add(bomb);
+      this.server.invoke("PlaceBomb", { bombType: BombType.Wave });
+    }
+    if (key == "KeyV" && state == "pressed") {
+      const bomb = new PulseBomb(this.spriteFactory.createSprite("pulseBomb"), this.player.position.clone());
+
+      this.bombs.push(bomb);
+      this.gameRenderer.add(bomb);
+      this.server.invoke("PlaceBomb", { bombType: BombType.Pulse });
     }
   }
 

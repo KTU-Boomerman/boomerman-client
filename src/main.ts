@@ -53,6 +53,9 @@ container.register<Server>("Server", {
   backgroundManager.render();
 
   keyboardManager.on("KeyZ", game);
+  keyboardManager.on("KeyX", game);
+  keyboardManager.on("KeyC", game);
+  keyboardManager.on("KeyV", game);
 
   await new GameManager(game, gameRenderer).start();
 })();

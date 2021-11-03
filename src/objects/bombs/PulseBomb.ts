@@ -2,7 +2,7 @@ import Item from "../Item";
 import Position from "../Position";
 import Sprite from "../../sprite/Sprite";
 
-export default class WaveBomb extends Item {
+export default class PulseBomb extends Item {
   constructor(sprite: Sprite, position: Position) {
     super(sprite, position);
   }

@@ -6,6 +6,7 @@ export const USED_KEYS = [
   "KeyZ",
   "KeyX",
   "KeyC",
+  "KeyV",
 ] as const;
 
 export type Key = typeof USED_KEYS[number];

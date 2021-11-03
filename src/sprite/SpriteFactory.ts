@@ -18,8 +18,8 @@ interface AnimatedSpriteData extends StaticSpriteData {
 
 type SpriteData = StaticSpriteData | AnimatedSpriteData;
 
-type SpriteKey = "player" | "grass" | "wall" | "wood" | "bomb" | "destructibleWall" | "bBombPowerup" | "sBombPowerup" |
-    "bHealthPowerup" | "sHealthPowerup" | "bSpeedPowerup" | "sSpeedPowerup";
+type SpriteKey = "player" | "grass" | "wall" | "wood" | "regularBomb" | "destructibleWall" | "bBombPowerup" | "sBombPowerup" |
+    "bHealthPowerup" | "sHealthPowerup" | "bSpeedPowerup" | "sSpeedPowerup" | "waveBomb" | "pulseBomb" | "boomerangBomb" ;
 
 export const sprites: Record<SpriteKey, SpriteData> = {
   player: {
@@ -34,8 +34,8 @@ export const sprites: Record<SpriteKey, SpriteData> = {
   wood: {
     file: "../../assets/images/wood.png",
   },
-  bomb: {
-    file: "../../assets/images/bomb.png",
+  regularBomb: {
+    file: "../../assets/images/regularBomb.png",
   },
   destructibleWall: {
     file: "../../assets/images/destructibleWall.png",
@@ -58,7 +58,15 @@ export const sprites: Record<SpriteKey, SpriteData> = {
   sSpeedPowerup: {
     file: "../../assets/images/sSpeedPowerup.png",
   },
-
+  waveBomb: {
+    file: "../../assets/images/waveBomb.png",
+  },
+  pulseBomb: {
+    file: "../../assets/images/pulseBomb.png",
+  },
+  boomerangBomb: {
+    file: "../../assets/images/boomerangBomb.png",
+  },
 };
 
 // TODO: add logic for animated sprites
