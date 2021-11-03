@@ -1,4 +1,5 @@
 import { MockProxy, mock } from "jest-mock-extended";
+import { Game } from "../core/Game";
 import { IKeyboardManager, Key } from "../core/managers/IKeyboardManager";
 import Sprite from "../sprite/Sprite";
 import Player from "./Player";
@@ -26,15 +27,23 @@ describe("Player", () => {
   let player: Player;
   let keyboardManager: MockProxy<IKeyboardManager>;
   let canvasContext: MockProxy<CanvasRenderingContext2D>;
+  let game: MockProxy<Game>;
   const initialPosition = Position.create(0, 0);
 
   beforeEach(() => {
     const sprite = mock<Sprite>();
     keyboardManager = mock<IKeyboardManager>();
     canvasContext = mock<CanvasRenderingContext2D>();
-    player = new Player(sprite, initialPosition);
+    player = new Player(sprite, initialPosition, game);
     player.keyboardManager = keyboardManager;
     player.position = initialPosition.clone();
+
+    game = mock<Game>();
+    game.onPlayerPositionUpdate.mockImplementation(
+      async (_position, newPosition) => {
+        player.position = new Position(newPosition);
+      }
+    );
   });
 
   it("should convert to dto", () => {

@@ -11,7 +11,7 @@ import { container } from "tsyringe";
 import { createKeyboardManager } from "./core/managers/KeyboardManager";
 import { IKeyboardManager } from "./core/managers/IKeyboardManager";
 import { Game } from "./core/Game";
-import { showNotification } from './utils/notification';
+import { showNotification } from "./utils/notification";
 
 const backgroundCanvas = document.getElementById(
   "background"
@@ -59,4 +59,3 @@ container.register<Server>("Server", {
 
   await new GameManager(game, gameRenderer).start();
 })();
-

@@ -21,6 +21,7 @@ import SpriteFactory from "../sprite/SpriteFactory";
 import BoomerangBomb from "../objects/bombs/BoomerangBomb";
 import WaveBomb from "../objects/bombs/WaveBomb";
 import PulseBomb from "../objects/bombs/PulseBomb";
+import { PositionDTO } from "../dtos/PositionDTO";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -46,7 +47,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.enemies = new Map();
     this.bombs = [];
 
-    this.player = new Player(this.playerSprite, Position.create(0, 0));
+    this.player = new Player(this.playerSprite, Position.create(0, 0), this);
 
     this.player.keyboardManager = this.keyboardManager;
   }
@@ -97,42 +98,74 @@ export class Game extends AbstractGame implements IKeyboardListener {
     });
 
     this.server.on("PlayerPlaceBomb", (bombDto) => {
-      const bomb = new BasicBomb(this.spriteFactory.createSprite("regularBomb"), new Position(bombDto.position));
+      const bomb = new BasicBomb(
+        this.spriteFactory.createSprite("regularBomb"),
+        new Position(bombDto.position)
+      );
       this.bombs.push(bomb);
 
       this.gameRenderer.add(bomb);
     });
   }
 
+  async onPlayerPositionUpdate(
+    position: PositionDTO,
+    newPosition: PositionDTO
+  ) {
+    const currentPosition = await this.server.invoke(
+      "PlayerMove",
+      position,
+      newPosition
+    );
+
+    this.player.position = new Position(currentPosition);
+  }
+
   onKey(key: Key, state: KeyState): void {
     if (key == "KeyZ" && state == "pressed") {
-      const bomb = new BasicBomb(this.spriteFactory.createSprite("regularBomb"), this.player.position.clone());
+      const bomb = new BasicBomb(
+        this.spriteFactory.createSprite("regularBomb"),
+        this.player.position.clone()
+      );
 
       this.bombs.push(bomb);
       this.gameRenderer.add(bomb);
       this.server.invoke("PlaceBomb", { bombType: BombType.Regular });
     }
     if (key == "KeyX" && state == "pressed") {
-      const bomb = new BoomerangBomb(this.spriteFactory.createSprite("boomerangBomb"), this.player.position.clone());
+      const bomb = new BoomerangBomb(
+        this.spriteFactory.createSprite("boomerangBomb"),
+        this.player.position.clone()
+      );
 
       this.bombs.push(bomb);
       this.gameRenderer.add(bomb);
       this.server.invoke("PlaceBomb", { bombType: BombType.Boomerang });
     }
     if (key == "KeyC" && state == "pressed") {
-      const bomb = new WaveBomb(this.spriteFactory.createSprite("waveBomb"), this.player.position.clone());
+      const bomb = new WaveBomb(
+        this.spriteFactory.createSprite("waveBomb"),
+        this.player.position.clone()
+      );
 
       this.bombs.push(bomb);
       this.gameRenderer.add(bomb);
       this.server.invoke("PlaceBomb", { bombType: BombType.Wave });
     }
     if (key == "KeyV" && state == "pressed") {
-      const bomb = new PulseBomb(this.spriteFactory.createSprite("pulseBomb"), this.player.position.clone());
+      const bomb = new PulseBomb(
+        this.spriteFactory.createSprite("pulseBomb"),
+        this.player.position.clone()
+      );
 
-      this.bombs.push(bomb);
-      this.gameRenderer.add(bomb);
-      this.server.invoke("PlaceBomb", { bombType: BombType.Pulse });
+      this.addBomb(bomb, BombType.Pulse);
     }
+  }
+
+  private addBomb(bomb: Bomb, bombType: BombType = BombType.Regular) {
+    this.bombs.push(bomb);
+    this.gameRenderer.add(bomb);
+    this.server.invoke("PlaceBomb", { bombType });
   }
 
   private loadEnemies(players: PlayerDTO[], sprite: Sprite) {
