@@ -1,7 +1,6 @@
 import {
   HubConnection,
   HubConnectionBuilder,
-  LogLevel,
 } from "@microsoft/signalr";
 import { BombDTO } from "../dtos/BombDTO";
 import { CreateBombDTO } from "../dtos/CreateBombDTO";
@@ -44,7 +43,6 @@ export default class Server {
   private connection: HubConnection;
   private constructor() {
     this.connection = new HubConnectionBuilder()
-      .configureLogging(LogLevel.Information)
       .withUrl("http://localhost:5000/game")
       .build();
   }
