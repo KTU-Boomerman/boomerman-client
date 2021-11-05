@@ -4,6 +4,7 @@ import { CreateBombDTO } from "../dtos/CreateBombDTO";
 import { GameStateDTO } from "../dtos/GameStateDTO";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
+import {MapDTO} from "../dtos/MapDTO";
 
 type InvokeEventMap = {
   PlayerJoin: () => void;
@@ -19,7 +20,8 @@ type OnEventMap = {
   Joined: (
     player: PlayerDTO,
     players: PlayerDTO[],
-    gameStateDto: GameStateDTO
+    gameStateDto: GameStateDTO,
+    map: MapDTO
   ) => void;
   GameStateChanged: (gameState: GameStateDTO) => void;
   PlayerLeave: (playerId: string) => void;

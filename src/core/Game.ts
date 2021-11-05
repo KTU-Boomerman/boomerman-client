@@ -19,7 +19,9 @@ import Renderer from "./Renderer";
 import SpriteFactory from "../sprite/SpriteFactory";
 import { PositionDTO } from "../dtos/PositionDTO";
 import { Explosion } from "../objects/Explosion";
-import { BombFactory } from '../objects/bombs/BombFactory';
+import { BombFactory } from "../objects/bombs/BombFactory";
+import { MapDTO } from "../dtos/MapDTO";
+import WallBuilder from "../objects/walls/WallBuilder";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -69,11 +71,15 @@ export class Game extends AbstractGame implements IKeyboardListener {
   private mapEvents() {
     this.server.invoke("PlayerJoin");
 
-    this.server.on("Joined", async (playerDto, playersDto, gameStateDto) => {
-      this.loadPlayer(playerDto);
-      this.loadEnemies(playersDto, this.playerSprite);
-      this.gameState = gameStateDto.gameState;
-    });
+    this.server.on(
+      "Joined",
+      async (playerDto, playersDto, gameStateDto, mapDto) => {
+        this.loadPlayer(playerDto);
+        this.loadEnemies(playersDto, this.playerSprite);
+        this.loadMap(mapDto);
+        this.gameState = gameStateDto.gameState;
+      }
+    );
 
     this.server.on("GameStateChanged", (gameStateDto) => {
       this.gameState = gameStateDto.gameState;
@@ -109,7 +115,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.server.on("Explosion", (positionDto) => {
       // remove bomb
       const position = new Position(positionDto);
-      const bomb = this.bombs.find(b => b.position.equals(position));
+      const bomb = this.bombs.find((b) => b.position.equals(position));
 
       if (bomb) {
         this.bombs = this.bombs.filter((b) => b != bomb);
@@ -117,10 +123,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
       }
 
       // add explosion
-      const explosion = new Explosion(
-        this.explosionSprite,
-        position
-      );
+      const explosion = new Explosion(this.explosionSprite, position);
 
       this.gameRenderer.add(explosion);
 
@@ -187,5 +190,15 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.player.position = postion;
 
     this.gameRenderer.add(this.player);
+  }
+
+  private loadMap(mapDto: MapDTO) {
+    const destructibleWallBuilder = new WallBuilder()
+      .setSprite(this.spriteFactory.createSprite("destructibleWall"))
+      .setIsDestructible(true);
+      
+    mapDto.walls.forEach((wPos) => {
+      this.gameRenderer.add(destructibleWallBuilder.setPosition(wPos).build());
+    });
   }
 }
