@@ -128,9 +128,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
         this.player.position.clone()
       );
 
-      this.bombs.push(bomb);
-      this.gameRenderer.add(bomb);
-      this.server.invoke("PlaceBomb", { bombType: BombType.Regular });
+      this.addBomb(bomb);
     }
     if (key == "KeyX" && state == "pressed") {
       const bomb = new BoomerangBomb(
@@ -138,9 +136,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
         this.player.position.clone()
       );
 
-      this.bombs.push(bomb);
-      this.gameRenderer.add(bomb);
-      this.server.invoke("PlaceBomb", { bombType: BombType.Boomerang });
+      this.addBomb(bomb, BombType.Boomerang);
     }
     if (key == "KeyC" && state == "pressed") {
       const bomb = new WaveBomb(
@@ -148,9 +144,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
         this.player.position.clone()
       );
 
-      this.bombs.push(bomb);
-      this.gameRenderer.add(bomb);
-      this.server.invoke("PlaceBomb", { bombType: BombType.Wave });
+      this.addBomb(bomb, BombType.Wave);
     }
     if (key == "KeyV" && state == "pressed") {
       const bomb = new PulseBomb(
@@ -162,10 +156,11 @@ export class Game extends AbstractGame implements IKeyboardListener {
     }
   }
 
-  private addBomb(bomb: Bomb, bombType: BombType = BombType.Regular) {
+  private async addBomb(bomb: Bomb, bombType: BombType = BombType.Regular) {
+    const positionDTO = await this.server.invoke("PlaceBomb", { bombType });
+    bomb.setPosition(new Position(positionDTO));
     this.bombs.push(bomb);
     this.gameRenderer.add(bomb);
-    this.server.invoke("PlaceBomb", { bombType });
   }
 
   private loadEnemies(players: PlayerDTO[], sprite: Sprite) {

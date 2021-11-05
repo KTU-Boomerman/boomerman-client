@@ -11,7 +11,7 @@ type InvokeEventMap = {
     originalPosition: PositionDTO,
     newPosition: PositionDTO
   ) => PositionDTO;
-  PlaceBomb: (bomb: CreateBombDTO) => void;
+  PlaceBomb: (bomb: CreateBombDTO) => PositionDTO;
 };
 
 type OnEventMap = {
