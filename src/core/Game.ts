@@ -22,6 +22,8 @@ import BoomerangBomb from "../objects/bombs/BoomerangBomb";
 import WaveBomb from "../objects/bombs/WaveBomb";
 import PulseBomb from "../objects/bombs/PulseBomb";
 import { PositionDTO } from "../dtos/PositionDTO";
+import {MapDTO} from "../dtos/MapDTO";
+import WallBuilder from "../objects/walls/WallBuilder";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -68,9 +70,10 @@ export class Game extends AbstractGame implements IKeyboardListener {
   private mapEvents() {
     this.server.invoke("PlayerJoin");
 
-    this.server.on("Joined", async (playerDto, playersDto, gameStateDto) => {
+    this.server.on("Joined", async (playerDto, playersDto, gameStateDto, mapDto) => {
       this.loadPlayer(playerDto);
       this.loadEnemies(playersDto, this.playerSprite);
+      this.loadMap(mapDto);
       this.gameState = gameStateDto.gameState;
     });
 
@@ -182,5 +185,14 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.player.position = postion;
 
     this.gameRenderer.add(this.player);
+  }
+
+  private loadMap(mapDto: MapDTO) {
+    const destructibleWallBuilder = new WallBuilder().setSprite(
+        this.spriteFactory.createSprite("destructibleWall")
+    ).setIsDestructible(true);
+    mapDto.walls.forEach(wPos => {
+      this.gameRenderer.add(destructibleWallBuilder.setPosition(wPos).build())
+    });
   }
 }

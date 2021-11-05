@@ -22,9 +22,6 @@ export class BackgroundManager implements IBackgroundManager {
     const nonDestructableWallBuilder = new WallBuilder().setSprite(
       this.spriteFactory.createSprite("wall")
     ).setIsDestructible(false);
-    const destructibleWallWallBuilder = new WallBuilder().setSprite(
-      this.spriteFactory.createSprite("destructibleWall")
-    ).setIsDestructible(true);
     const grassBuilder = new WallBuilder().setSprite(
       this.spriteFactory.createSprite("grass")
     );
@@ -43,9 +40,6 @@ export class BackgroundManager implements IBackgroundManager {
             break;
           case "grs":
             this.map[y][x] = grassBuilder.setPosition(position).build();
-            break;
-          case "dew":
-            this.map[y][x] = destructibleWallWallBuilder.setPosition(position).build();
             break;
         }
 
