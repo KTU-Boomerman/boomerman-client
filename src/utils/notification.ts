@@ -1,6 +1,5 @@
 import Toastify from "toastify-js";
 
-
 export const showNotification = (title: string, message: string) => {
   Toastify({
     text: `<b>${title}</b><br/>${message}`,

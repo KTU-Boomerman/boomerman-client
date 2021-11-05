@@ -7,8 +7,7 @@ import Bomb from "./Bomb";
 
 export default class BasicBomb
   extends Bomb
-  implements DataTransferable<BombDTO>
-{
+  implements DataTransferable<BombDTO> {
   constructor(sprite: Sprite, position: Position) {
     super(sprite, position);
   }

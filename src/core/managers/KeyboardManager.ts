@@ -42,9 +42,7 @@ export class KeyboardManager implements IKeyboardManager {
       this.pressedKeys.delete(key);
     }
 
-    this._listeners[key].forEach((listener) => 
-      listener.onKey(key, state)
-    );
+    this._listeners[key].forEach((listener) => listener.onKey(key, state));
   }
 
   public isPressed(key: Key): boolean {

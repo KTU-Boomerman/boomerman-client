@@ -8,7 +8,7 @@ export default abstract class Bomb extends Item {
     throw new Error("Method not implemented.");
   }
 
-  public setPosition(position: Position) : void {
+  public setPosition(position: Position): void {
     this._position = position;
   }
 }

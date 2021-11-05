@@ -1,10 +1,14 @@
-import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  LogLevel,
+} from "@microsoft/signalr";
 import { BombDTO } from "../dtos/BombDTO";
 import { CreateBombDTO } from "../dtos/CreateBombDTO";
 import { GameStateDTO } from "../dtos/GameStateDTO";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
-import {MapDTO} from "../dtos/MapDTO";
+import { MapDTO } from "../dtos/MapDTO";
 
 type InvokeEventMap = {
   PlayerJoin: () => void;

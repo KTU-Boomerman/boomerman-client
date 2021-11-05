@@ -8,8 +8,7 @@ import { Game } from "../core/Game";
 
 export default class Player
   extends GameObject
-  implements DataTransferable<PlayerDTO>
-{
+  implements DataTransferable<PlayerDTO> {
   RENDER_PRIORITY = 10;
 
   private _id: string = "";

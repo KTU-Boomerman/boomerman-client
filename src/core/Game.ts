@@ -129,9 +129,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
       this.gameRenderer.add(explosion);
 
-      const wall = this.walls.find(w => w.position.equals(position));
-      if (wall)
-        this.gameRenderer.remove(wall);
+      const wall = this.walls.find((w) => w.position.equals(position));
+      if (wall) this.gameRenderer.remove(wall);
       setTimeout(() => {
         this.gameRenderer.remove(explosion);
       }, 1000);
@@ -198,11 +197,14 @@ export class Game extends AbstractGame implements IKeyboardListener {
   }
 
   private loadMap(mapDto: MapDTO) {
-    const destructibleWallBuilder = new WallBuilder().setSprite(
-        this.spriteFactory.createSprite("destructibleWall")
-    ).setIsDestructible(true);
-    mapDto.walls.forEach(wPos => {
-      let wall = destructibleWallBuilder.setPosition(new Position(wPos)).build();
+    const destructibleWallBuilder = new WallBuilder()
+      .setSprite(this.spriteFactory.createSprite("destructibleWall"))
+      .setIsDestructible(true);
+
+    mapDto.walls.forEach((wPos) => {
+      let wall = destructibleWallBuilder
+        .setPosition(new Position(wPos))
+        .build();
       this.walls.push(wall);
       this.gameRenderer.add(wall);
     });

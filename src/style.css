@@ -18,9 +18,15 @@ body {
   box-sizing: border-box;
 }
 
-#ui { z-index: 3; }
-#game { z-index: 2; }
-#background { z-index: 1; }
+#ui {
+  z-index: 3;
+}
+#game {
+  z-index: 2;
+}
+#background {
+  z-index: 1;
+}
 
 canvas {
   width: 1088px;
@@ -32,6 +38,6 @@ canvas {
   image-rendering: crisp-edges;
 }
 
-.toastify { 
-  font-family: 'Courier New', Courier, monospace;
+.toastify {
+  font-family: "Courier New", Courier, monospace;
 }
