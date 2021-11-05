@@ -17,6 +17,7 @@ const backgroundCanvas = document.getElementById(
   "background"
 ) as HTMLCanvasElement;
 const gameCanvas = document.getElementById("game") as HTMLCanvasElement;
+const uiCanvas = document.getElementById("ui") as HTMLCanvasElement;
 
 container.register("BackgroundRenderer", {
   useValue: new Renderer(backgroundCanvas),
@@ -24,6 +25,10 @@ container.register("BackgroundRenderer", {
 
 container.register("GameRenderer", {
   useValue: new Renderer(gameCanvas),
+});
+
+container.register("UIRenderer", {
+  useValue: new Renderer(uiCanvas),
 });
 
 container.register<IKeyboardManager>("IKeyboardManager", {
@@ -52,6 +57,7 @@ container.register<Server>("Server", {
 
   backgroundManager.buildBackground();
   backgroundManager.render();
+
 
   keyboardManager.on("KeyZ", game);
   keyboardManager.on("KeyX", game);

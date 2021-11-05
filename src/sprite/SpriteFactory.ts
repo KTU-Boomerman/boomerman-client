@@ -34,7 +34,9 @@ type SpriteKey =
   | "waveBomb"
   | "pulseBomb"
   | "boomerangBomb"
-  | "explosion";
+  | "explosion"
+  | "heart"
+  | "heartGrey";
 
 export const sprites: Record<SpriteKey, SpriteData> = {
   player: {
@@ -84,6 +86,12 @@ export const sprites: Record<SpriteKey, SpriteData> = {
   },
   explosion: {
     file: "../../assets/images/explosion.png",
+  },
+  heart: {
+    file: "../../assets/images/heart.png",
+  },
+  heartGrey: {
+    file: "../../assets/images/heartGrey.png",
   },
 };
 

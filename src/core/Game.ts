@@ -23,6 +23,7 @@ import { BombFactory } from "../objects/bombs/BombFactory";
 import { MapDTO } from "../dtos/MapDTO";
 import WallBuilder from "../objects/walls/WallBuilder";
 import Wall from "../objects/walls/Wall";
+import {UIManager} from './managers/UIManager';
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -40,7 +41,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
     @inject("Server") private server: Server,
     @inject("GameRenderer") private gameRenderer: Renderer,
     @inject(SpriteFactory) public spriteFactory: SpriteFactory,
-    @inject(BombFactory) public bombFactory: BombFactory
+    @inject(BombFactory) public bombFactory: BombFactory,
+    @inject(UIManager) private uiManager: UIManager,
   ) {
     super();
 
@@ -55,6 +57,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.player = new Player(this.playerSprite, Position.create(0, 0), this);
 
     this.player.keyboardManager = this.keyboardManager;
+    
+    this.uiManager.render();
   }
 
   async start(): Promise<void> {
@@ -134,6 +138,10 @@ export class Game extends AbstractGame implements IKeyboardListener {
       setTimeout(() => {
         this.gameRenderer.remove(explosion);
       }, 1000);
+    });
+
+    this.server.on("UpdateLives", (lives) => {
+      this.uiManager.updateLives(lives);
     });
   }
 
