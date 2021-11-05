@@ -40,4 +40,8 @@ export default class Position implements DataTransferable<PositionDTO> {
   clone(): Position {
     return new Position({ x: this._x, y: this._y });
   }
+
+  equals(other: Position): boolean {
+    return this._x === other._x && this._y === other._y;
+  }
 }

@@ -3,12 +3,16 @@ import GameObject from "./GameObject";
 import Position from "./Position";
 
 export default class Item extends GameObject {
-  constructor(sprite: Sprite, protected position: Position) {
+  constructor(sprite: Sprite, protected _position: Position) {
     super(sprite);
   }
 
   render(context: CanvasRenderingContext2D): void {
-    if (this.position == null) return;
-    this.sprite.draw(context, this.position);
+    if (this._position == null) return;
+    this.sprite.draw(context, this._position);
+  }
+
+  get position(): Position {
+    return this._position;
   }
 }

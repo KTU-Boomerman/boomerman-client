@@ -59,7 +59,7 @@ describe("Player", () => {
   });
 
   it("should not move without initial position", () => {
-    player["_position"] = null as unknown as Position;
+    player["_position"] = (null as unknown) as Position;
     keyboardManager.isPressed.calledWith("ArrowUp").mockReturnValue(true);
 
     player.update(100);
@@ -68,7 +68,7 @@ describe("Player", () => {
   });
 
   it("should not render without initial position ", () => {
-    player["_position"] = null as unknown as Position;
+    player["_position"] = (null as unknown) as Position;
     player.render(canvasContext);
     expect(player["sprite"].draw).not.toBeCalled();
   });

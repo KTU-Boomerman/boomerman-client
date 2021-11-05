@@ -1,9 +1,13 @@
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+} from "@microsoft/signalr";
 import { BombDTO } from "../dtos/BombDTO";
 import { CreateBombDTO } from "../dtos/CreateBombDTO";
 import { GameStateDTO } from "../dtos/GameStateDTO";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
+import { MapDTO } from "../dtos/MapDTO";
 
 type InvokeEventMap = {
   PlayerJoin: () => void;
@@ -19,13 +23,15 @@ type OnEventMap = {
   Joined: (
     player: PlayerDTO,
     players: PlayerDTO[],
-    gameStateDto: GameStateDTO
+    gameStateDto: GameStateDTO,
+    map: MapDTO
   ) => void;
   GameStateChanged: (gameState: GameStateDTO) => void;
   PlayerLeave: (playerId: string) => void;
   PlayerMove: (playerId: string, position: PositionDTO) => void;
   PlayerPlaceBomb: (bomb: BombDTO) => void;
   Notification: (title: string, message: string) => void;
+  Explosion: (position: PositionDTO) => void;
 };
 
 export default class Server {

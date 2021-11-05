@@ -6,7 +6,6 @@ import { PlayerDTO } from "../dtos/PlayerDTO";
 import Sprite from "../sprite/Sprite";
 import { GameState } from "../objects/GameState";
 import Bomb from "../objects/bombs/Bomb";
-import BasicBomb from "../objects/bombs/BasicBomb";
 import { BombType } from "../objects/BombType";
 import { inject, singleton } from "tsyringe";
 import {
@@ -18,29 +17,35 @@ import {
 import Server from "./Server";
 import Renderer from "./Renderer";
 import SpriteFactory from "../sprite/SpriteFactory";
-import BoomerangBomb from "../objects/bombs/BoomerangBomb";
-import WaveBomb from "../objects/bombs/WaveBomb";
-import PulseBomb from "../objects/bombs/PulseBomb";
 import { PositionDTO } from "../dtos/PositionDTO";
+import { Explosion } from "../objects/Explosion";
+import { BombFactory } from "../objects/bombs/BombFactory";
+import { MapDTO } from "../dtos/MapDTO";
+import WallBuilder from "../objects/walls/WallBuilder";
+import Wall from "../objects/walls/Wall";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
   player: Player;
   enemies: Map<string, Enemy>;
   bombs: Bomb[];
+  walls: Wall[] = [];
   gameState: GameState;
 
   playerSprite: Sprite;
+  explosionSprite: Sprite;
 
   constructor(
     @inject("IKeyboardManager") private keyboardManager: IKeyboardManager,
     @inject("Server") private server: Server,
     @inject("GameRenderer") private gameRenderer: Renderer,
-    @inject(SpriteFactory) public spriteFactory: SpriteFactory
+    @inject(SpriteFactory) public spriteFactory: SpriteFactory,
+    @inject(BombFactory) public bombFactory: BombFactory
   ) {
     super();
 
     this.playerSprite = this.spriteFactory.createSprite("player");
+    this.explosionSprite = this.spriteFactory.createSprite("explosion");
 
     this.gameState = GameState.PlayersJoining;
 
@@ -68,11 +73,15 @@ export class Game extends AbstractGame implements IKeyboardListener {
   private mapEvents() {
     this.server.invoke("PlayerJoin");
 
-    this.server.on("Joined", async (playerDto, playersDto, gameStateDto) => {
-      this.loadPlayer(playerDto);
-      this.loadEnemies(playersDto, this.playerSprite);
-      this.gameState = gameStateDto.gameState;
-    });
+    this.server.on(
+      "Joined",
+      async (playerDto, playersDto, gameStateDto, mapDto) => {
+        this.loadPlayer(playerDto);
+        this.loadEnemies(playersDto, this.playerSprite);
+        this.loadMap(mapDto);
+        this.gameState = gameStateDto.gameState;
+      }
+    );
 
     this.server.on("GameStateChanged", (gameStateDto) => {
       this.gameState = gameStateDto.gameState;
@@ -98,13 +107,33 @@ export class Game extends AbstractGame implements IKeyboardListener {
     });
 
     this.server.on("PlayerPlaceBomb", (bombDto) => {
-      const bomb = new BasicBomb(
-        this.spriteFactory.createSprite("regularBomb"),
-        new Position(bombDto.position)
-      );
-      this.bombs.push(bomb);
+      const position = new Position(bombDto.position);
+      const bomb = this.bombFactory.createBomb(position, bombDto.bombType);
 
+      this.bombs.push(bomb);
       this.gameRenderer.add(bomb);
+    });
+
+    this.server.on("Explosion", (positionDto) => {
+      // remove bomb
+      const position = new Position(positionDto);
+      const bomb = this.bombs.find((b) => b.position.equals(position));
+
+      if (bomb) {
+        this.bombs = this.bombs.filter((b) => b != bomb);
+        this.gameRenderer.remove(bomb);
+      }
+
+      // add explosion
+      const explosion = new Explosion(this.explosionSprite, position);
+
+      this.gameRenderer.add(explosion);
+
+      const wall = this.walls.find((w) => w.position.equals(position));
+      if (wall) this.gameRenderer.remove(wall);
+      setTimeout(() => {
+        this.gameRenderer.remove(explosion);
+      }, 1000);
     });
   }
 
@@ -122,49 +151,27 @@ export class Game extends AbstractGame implements IKeyboardListener {
   }
 
   onKey(key: Key, state: KeyState): void {
-    if (key == "KeyZ" && state == "pressed") {
-      const bomb = new BasicBomb(
-        this.spriteFactory.createSprite("regularBomb"),
-        this.player.position.clone()
-      );
-
-      this.bombs.push(bomb);
-      this.gameRenderer.add(bomb);
-      this.server.invoke("PlaceBomb", { bombType: BombType.Regular });
-    }
-    if (key == "KeyX" && state == "pressed") {
-      const bomb = new BoomerangBomb(
-        this.spriteFactory.createSprite("boomerangBomb"),
-        this.player.position.clone()
-      );
-
-      this.bombs.push(bomb);
-      this.gameRenderer.add(bomb);
-      this.server.invoke("PlaceBomb", { bombType: BombType.Boomerang });
-    }
-    if (key == "KeyC" && state == "pressed") {
-      const bomb = new WaveBomb(
-        this.spriteFactory.createSprite("waveBomb"),
-        this.player.position.clone()
-      );
-
-      this.bombs.push(bomb);
-      this.gameRenderer.add(bomb);
-      this.server.invoke("PlaceBomb", { bombType: BombType.Wave });
-    }
-    if (key == "KeyV" && state == "pressed") {
-      const bomb = new PulseBomb(
-        this.spriteFactory.createSprite("pulseBomb"),
-        this.player.position.clone()
-      );
-
-      this.addBomb(bomb, BombType.Pulse);
+    if (state == "pressed") {
+      switch (key) {
+        case "KeyZ":
+          this.addBomb();
+          break;
+        case "KeyX":
+          this.addBomb(BombType.Boomerang);
+          break;
+        case "KeyC":
+          this.addBomb(BombType.Wave);
+          break;
+        case "KeyV":
+          this.addBomb(BombType.Pulse);
+          break;
+        default:
+          break;
+      }
     }
   }
 
-  private addBomb(bomb: Bomb, bombType: BombType = BombType.Regular) {
-    this.bombs.push(bomb);
-    this.gameRenderer.add(bomb);
+  private addBomb(bombType: BombType = BombType.Regular) {
     this.server.invoke("PlaceBomb", { bombType });
   }
 
@@ -187,5 +194,19 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.player.position = postion;
 
     this.gameRenderer.add(this.player);
+  }
+
+  private loadMap(mapDto: MapDTO) {
+    const destructibleWallBuilder = new WallBuilder()
+      .setSprite(this.spriteFactory.createSprite("destructibleWall"))
+      .setIsDestructible(true);
+
+    mapDto.walls.forEach((wPos) => {
+      let wall = destructibleWallBuilder
+        .setPosition(new Position(wPos))
+        .build();
+      this.walls.push(wall);
+      this.gameRenderer.add(wall);
+    });
   }
 }

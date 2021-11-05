@@ -1,14 +1,13 @@
 import { BombDTO } from "../../dtos/BombDTO";
 import { DataTransferable } from "../../dtos/DataTransferable";
 import { BombType } from "../BombType";
-import Item from "../Item";
 import Position from "../Position";
 import Sprite from "../../sprite/Sprite";
+import Bomb from "./Bomb";
 
 export default class BasicBomb
-  extends Item
-  implements DataTransferable<BombDTO>
-{
+  extends Bomb
+  implements DataTransferable<BombDTO> {
   constructor(sprite: Sprite, position: Position) {
     super(sprite, position);
   }
