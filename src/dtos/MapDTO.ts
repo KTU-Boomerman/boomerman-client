@@ -1,5 +1,5 @@
-import Position from "../objects/Position";
+import {PositionDTO} from "./PositionDTO";
 
 export interface MapDTO {
-    walls: Position[]
+    walls: PositionDTO[]
 }

@@ -19,4 +19,8 @@ export default class Wall extends GameObject {
   render(context: CanvasRenderingContext2D): void {
     this.sprite.draw(context, this._position);
   }
+
+  get position(): Position {
+    return this._position;
+  }
 }

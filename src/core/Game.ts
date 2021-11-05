@@ -22,12 +22,14 @@ import { Explosion } from "../objects/Explosion";
 import { BombFactory } from "../objects/bombs/BombFactory";
 import { MapDTO } from "../dtos/MapDTO";
 import WallBuilder from "../objects/walls/WallBuilder";
+import Wall from "../objects/walls/Wall";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
   player: Player;
   enemies: Map<string, Enemy>;
   bombs: Bomb[];
+  walls: Wall[] = [];
   gameState: GameState;
 
   playerSprite: Sprite;
@@ -129,6 +131,11 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
       setTimeout(() => {
         this.gameRenderer.remove(explosion);
+        console.log(position, this.walls);
+        const wall = this.walls.find(w => w.position.equals(position));
+        if (wall) {
+          this.gameRenderer.remove(wall);
+        }
       }, 1000);
     });
   }
@@ -193,12 +200,13 @@ export class Game extends AbstractGame implements IKeyboardListener {
   }
 
   private loadMap(mapDto: MapDTO) {
-    const destructibleWallBuilder = new WallBuilder()
-      .setSprite(this.spriteFactory.createSprite("destructibleWall"))
-      .setIsDestructible(true);
-      
-    mapDto.walls.forEach((wPos) => {
-      this.gameRenderer.add(destructibleWallBuilder.setPosition(wPos).build());
+    const destructibleWallBuilder = new WallBuilder().setSprite(
+        this.spriteFactory.createSprite("destructibleWall")
+    ).setIsDestructible(true);
+    mapDto.walls.forEach(wPos => {
+      let wall = destructibleWallBuilder.setPosition(new Position(wPos)).build();
+      this.walls.push(wall);
+      this.gameRenderer.add(wall);
     });
   }
 }
