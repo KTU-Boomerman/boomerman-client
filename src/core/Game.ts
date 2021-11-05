@@ -129,13 +129,11 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
       this.gameRenderer.add(explosion);
 
+      const wall = this.walls.find(w => w.position.equals(position));
+      if (wall)
+        this.gameRenderer.remove(wall);
       setTimeout(() => {
         this.gameRenderer.remove(explosion);
-        console.log(position, this.walls);
-        const wall = this.walls.find(w => w.position.equals(position));
-        if (wall) {
-          this.gameRenderer.remove(wall);
-        }
       }, 1000);
     });
   }
