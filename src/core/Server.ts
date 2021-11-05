@@ -1,4 +1,4 @@
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { BombDTO } from "../dtos/BombDTO";
 import { CreateBombDTO } from "../dtos/CreateBombDTO";
 import { GameStateDTO } from "../dtos/GameStateDTO";
@@ -11,7 +11,7 @@ type InvokeEventMap = {
     originalPosition: PositionDTO,
     newPosition: PositionDTO
   ) => PositionDTO;
-  PlaceBomb: (bomb: CreateBombDTO) => PositionDTO;
+  PlaceBomb: (bomb: CreateBombDTO) => void;
 };
 
 type OnEventMap = {
@@ -26,6 +26,7 @@ type OnEventMap = {
   PlayerMove: (playerId: string, position: PositionDTO) => void;
   PlayerPlaceBomb: (bomb: BombDTO) => void;
   Notification: (title: string, message: string) => void;
+  Explosion: (position: PositionDTO) => void;
 };
 
 export default class Server {
@@ -37,6 +38,7 @@ export default class Server {
   private connection: HubConnection;
   private constructor() {
     this.connection = new HubConnectionBuilder()
+      .configureLogging(LogLevel.Information)
       .withUrl("http://localhost:5000/game")
       .build();
   }

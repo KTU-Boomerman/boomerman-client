@@ -9,6 +9,6 @@ export default abstract class Bomb extends Item {
   }
 
   public setPosition(position: Position) : void {
-    this.position = position;
+    this._position = position;
   }
 }
