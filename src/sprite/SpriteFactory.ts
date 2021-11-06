@@ -14,12 +14,15 @@ interface AnimatedSpriteData extends StaticSpriteData {
   numRows: number;
   frameWidth: number;
   frameHeight: number;
+  frameDuration: number;
+  playsOnce: boolean;
 }
 
 type SpriteData = StaticSpriteData | AnimatedSpriteData;
 
 type SpriteKey =
   | "player"
+  | "playerTransparent"
   | "grass"
   | "wall"
   | "wood"
@@ -41,6 +44,9 @@ type SpriteKey =
 export const sprites: Record<SpriteKey, SpriteData> = {
   player: {
     file: "../../assets/images/player.png",
+  },
+  playerTransparent: {
+    file: "../../assets/images/playerTransparent.png",
   },
   grass: {
     file: "../../assets/images/grass.png",
@@ -85,7 +91,14 @@ export const sprites: Record<SpriteKey, SpriteData> = {
     file: "../../assets/images/boomerangBomb.png",
   },
   explosion: {
-    file: "../../assets/images/explosion.png",
+    file: "../../assets/images/explosions.png",
+    isAnimated: true,
+    numColumns: 4,
+    numRows: 4,
+    frameHeight: 32,
+    frameWidth: 32,
+    frameDuration: 1000 / 16,
+    playsOnce: true,
   },
   heart: {
     file: "../../assets/images/heart.png",
@@ -109,11 +122,12 @@ export default class SpriteFactory {
 
     const { isAnimated } = sprites[spriteKey];
 
-    const sprite = isAnimated
-      ? new AnimatedSprite(image)
-      : new StaticSprite(image);
+    if (isAnimated) {
+      const data = sprites[spriteKey] as AnimatedSpriteData;
+      return new AnimatedSprite(image, data);
+    }
 
-    return sprite;
+    return new StaticSprite(image);
   }
 
   async loadImages(): Promise<void> {

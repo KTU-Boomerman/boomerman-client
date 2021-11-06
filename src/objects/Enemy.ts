@@ -7,8 +7,8 @@ export default class Enemy extends GameObject {
   private _id: string = "";
   private _position: Position;
 
-  constructor(sprite: Sprite, playerDto: PlayerDTO) {
-    super(sprite);
+  constructor(private sprite: Sprite, playerDto: PlayerDTO) {
+    super();
     this._id = playerDto.id;
     this._position = new Position(playerDto.position);
   }
