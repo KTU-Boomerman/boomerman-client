@@ -118,26 +118,29 @@ export class Game extends AbstractGame implements IKeyboardListener {
       this.gameRenderer.add(bomb);
     });
 
-    this.server.on("Explosion", (positionDto) => {
-      // remove bomb
-      const position = new Position(positionDto);
-      const bomb = this.bombs.find((b) => b.position.equals(position));
+    this.server.on("Explosions", (positionsDto) => {
+      positionsDto.forEach(dto => {
+        const position = new Position(dto);
+        // remove bomb
+        const bomb = this.bombs.find((b) => b.position.equals(position));
 
-      if (bomb) {
-        this.bombs = this.bombs.filter((b) => b != bomb);
-        this.gameRenderer.remove(bomb);
-      }
+        if (bomb) {
+          this.bombs = this.bombs.filter((b) => b != bomb);
+          this.gameRenderer.remove(bomb);
+        }
 
-      // add explosion
-      const explosion = new Explosion(this.explosionSprite, position);
+        // add explosion
+        const explosion = new Explosion(this.explosionSprite, position);
+        this.gameRenderer.add(explosion);
 
-      this.gameRenderer.add(explosion);
+        // break wall
+        const wall = this.walls.find((w) => w.position.equals(position));
+        if (wall) this.gameRenderer.remove(wall);
 
-      const wall = this.walls.find((w) => w.position.equals(position));
-      if (wall) this.gameRenderer.remove(wall);
-      setTimeout(() => {
-        this.gameRenderer.remove(explosion);
-      }, 1000);
+        setTimeout(() => {
+          this.gameRenderer.remove(explosion);
+        }, 1000);
+      });
     });
 
     this.server.on("UpdateLives", (lives) => {

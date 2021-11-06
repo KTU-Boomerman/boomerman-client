@@ -32,7 +32,7 @@ type OnEventMap = {
   PlayerMove: (playerId: string, position: PositionDTO) => void;
   PlayerPlaceBomb: (bomb: BombDTO) => void;
   Notification: (title: string, message: string) => void;
-  Explosion: (position: PositionDTO) => void;
+  Explosions: (positions: PositionDTO[]) => void;
   UpdateLives: (lives: Lives) => void;
 };
 
