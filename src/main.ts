@@ -45,8 +45,9 @@ container.register<Server>("Server", {
   const gameRenderer = container.resolve<Renderer>("GameRenderer");
   const spriteFactory = container.resolve(SpriteFactory);
   const backgroundManager = container.resolve(BackgroundManager);
-  const keyboardManager =
-    container.resolve<IKeyboardManager>("IKeyboardManager");
+  const keyboardManager = container.resolve<IKeyboardManager>(
+    "IKeyboardManager"
+  );
 
   await soundManager.init();
   await server.start();

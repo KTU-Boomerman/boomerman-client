@@ -1,3 +1,3 @@
 export interface Effect {
-    play(): void;
+  play(): void;
 }

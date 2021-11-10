@@ -4,7 +4,7 @@ import Sprite from "../sprite/Sprite";
 
 export class Heart implements Renderable {
   RENDER_PRIORITY: number = 100;
-  
+
   constructor(private _position: Position, private _sprite: Sprite) {}
 
   set sprite(sprite: Sprite) {

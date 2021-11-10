@@ -11,7 +11,7 @@ export default class StaticSprite implements Sprite {
   clone(): Sprite {
     return new StaticSprite(this._image);
   }
-  
+
   update(_deltaTime: number): void {}
 
   draw(context: CanvasRenderingContext2D, position: Position): void {

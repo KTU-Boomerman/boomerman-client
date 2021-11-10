@@ -43,7 +43,7 @@ export class Renderer {
 
   set grayscale(value: number) {
     this._grayscale = value;
-    
+
     if (this._grayscale > 100) {
       this._grayscale = 100;
     }

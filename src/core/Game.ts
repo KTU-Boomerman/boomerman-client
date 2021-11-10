@@ -61,8 +61,9 @@ export class Game extends AbstractGame implements IKeyboardListener {
     super();
 
     this.playerSprite = this.spriteFactory.createSprite("player");
-    this.playerDyingSprite =
-      this.spriteFactory.createSprite("playerTransparent");
+    this.playerDyingSprite = this.spriteFactory.createSprite(
+      "playerTransparent"
+    );
     this.enemySprite = this.spriteFactory.createSprite("enemy");
     this.enemyDyingSprite = this.spriteFactory.createSprite("enemyTransparent");
 
@@ -86,7 +87,11 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
     this.uiManager.render();
 
-    this.deathEffect = this.createEffect({ sound: "death", visual: "grayscale", animation: "shake" });
+    this.deathEffect = this.createEffect({
+      sound: "death",
+      visual: "grayscale",
+      animation: "shake",
+    });
   }
 
   async start(): Promise<void> {
@@ -291,8 +296,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
       ]);
     }
 
-    if (animation === "shake") 
-      effect = new ShakeDecorator(effect)
+    if (animation === "shake") effect = new ShakeDecorator(effect);
 
     return effect;
   }

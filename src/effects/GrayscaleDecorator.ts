@@ -10,7 +10,7 @@ export class GrayscaleDecorator extends Decorator {
   public play() {
     super.play();
 
-    this.renderers.forEach(renderer => {
+    this.renderers.forEach((renderer) => {
       renderer.grayscale = 100;
     });
   }
