@@ -6,8 +6,4 @@ export default class BoomerangBomb extends Bomb {
   constructor(sprite: Sprite, position: Position) {
     super(sprite, position);
   }
-
-  public explode(): void {
-    throw new Error("Method not implemented.");
-  }
 }

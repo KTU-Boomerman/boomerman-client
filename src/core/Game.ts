@@ -25,6 +25,8 @@ import WallBuilder from "../objects/walls/WallBuilder";
 import Wall from "../objects/walls/Wall";
 import { UIManager } from "./managers/UIManager";
 import AnimatedSprite from "../sprite/AnimatedSprite";
+import Powerup from "../objects/powerups/Powerup";
+import {PowerupFactory} from "../objects/powerups/PowerupFactory";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -33,6 +35,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
   bombs: Bomb[];
   explosions: Explosion[] = [];
   walls: Wall[] = [];
+  powerups: Powerup[] = [];
   gameState: GameState;
 
   playerSprite: Sprite;
@@ -47,6 +50,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     @inject("GameRenderer") private gameRenderer: Renderer,
     @inject(SpriteFactory) public spriteFactory: SpriteFactory,
     @inject(BombFactory) public bombFactory: BombFactory,
+    @inject(PowerupFactory) public powerupFactory: PowerupFactory,
     @inject(UIManager) private uiManager: UIManager
   ) {
     super();
@@ -183,6 +187,14 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
       const enemy = this.enemies.get(playerId);
       if (enemy) enemy.lives = lives;
+    });
+
+    this.server.on("PlacePowerup", (powerupDto) => {
+      const position = new Position(powerupDto.position);
+      const powerup = this.powerupFactory.createBomb(position, powerupDto.powerupType);
+
+      this.powerups.push(powerup);
+      this.gameRenderer.add(powerup);
     });
   }
 
