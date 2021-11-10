@@ -168,6 +168,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
           this.gameRenderer.remove(bomb);
         }
 
+        this.removePowerup(new Position(position));
+
         // add explosion
         const explosion = new Explosion(this.explosionSprite.clone(), position);
         this.gameRenderer.add(explosion);
@@ -195,6 +197,10 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
       this.powerups.push(powerup);
       this.gameRenderer.add(powerup);
+    });
+
+    this.server.on("RemovePowerup", (positionDto) => {
+      this.removePowerup(new Position(positionDto));
     });
   }
 
@@ -269,5 +275,13 @@ export class Game extends AbstractGame implements IKeyboardListener {
       this.walls.push(wall);
       this.gameRenderer.add(wall);
     });
+  }
+
+  private removePowerup(position: Position) {
+    const powerup = this.powerups.find((p) => p.position.equals(position));
+    if (powerup) {
+      this.powerups = this.powerups.filter((p) => p != powerup);
+      this.gameRenderer.remove(powerup);
+    }
   }
 }

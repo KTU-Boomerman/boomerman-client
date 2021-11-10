@@ -36,6 +36,7 @@ type OnEventMap = {
   Explosions: (positions: PositionDTO[]) => void;
   UpdateLives: (playerId: string, lives: Lives) => void;
   PlacePowerup: (powerup: PowerupDTO) => void;
+  RemovePowerup: (position: PositionDTO) => void;
 };
 
 export default class Server {
