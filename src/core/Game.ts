@@ -37,6 +37,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
   playerSprite: Sprite;
   playerDyingSprite: Sprite;
+  enemySprite: Sprite;
+  enemyDyingSprite: Sprite;
   explosionSprite: AnimatedSprite;
 
   constructor(
@@ -52,6 +54,10 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.playerSprite = this.spriteFactory.createSprite("player");
     this.playerDyingSprite =
       this.spriteFactory.createSprite("playerTransparent");
+    this.enemySprite = this.spriteFactory.createSprite("enemy");
+    this.enemyDyingSprite =
+      this.spriteFactory.createSprite("enemyTransparent");
+
     this.explosionSprite = this.spriteFactory.createSprite(
       "explosion"
     ) as AnimatedSprite;
@@ -225,7 +231,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
   }
 
   private loadEnemy(player: PlayerDTO) {
-    const enemy = new Enemy(this.playerSprite, this.playerDyingSprite, player);
+    const enemy = new Enemy(this.enemySprite, this.enemyDyingSprite, player);
     this.enemies.set(enemy.id, enemy);
 
     this.gameRenderer.add(enemy);

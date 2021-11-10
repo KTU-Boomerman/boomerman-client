@@ -23,6 +23,8 @@ type SpriteData = StaticSpriteData | AnimatedSpriteData;
 type SpriteKey =
   | "player"
   | "playerTransparent"
+  | "enemy"
+  | "enemyTransparent"
   | "grass"
   | "wall"
   | "wood"
@@ -47,6 +49,12 @@ export const sprites: Record<SpriteKey, SpriteData> = {
   },
   playerTransparent: {
     file: "../../assets/images/playerTransparent.png",
+  },
+  enemy: {
+    file: "../../assets/images/enemy.png",
+  },
+  enemyTransparent: {
+    file: "../../assets/images/enemyTransparent.png",
   },
   grass: {
     file: "../../assets/images/grass.png",
