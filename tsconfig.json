@@ -15,6 +15,7 @@
     "noImplicitReturns": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "strictNullChecks": true,
     "types": ["@types/jest"],
   },
   "include": ["./src/*.ts"],

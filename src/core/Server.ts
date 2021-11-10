@@ -33,7 +33,7 @@ type OnEventMap = {
   PlayerPlaceBomb: (bomb: BombDTO) => void;
   Notification: (title: string, message: string) => void;
   Explosions: (positions: PositionDTO[]) => void;
-  UpdateLives: (lives: Lives) => void;
+  UpdateLives: (playerId: string, lives: Lives) => void;
 };
 
 export default class Server {

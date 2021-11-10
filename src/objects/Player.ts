@@ -18,7 +18,6 @@ export default class Player
   private _speed = 0.2;
   private _keyboardManager?: IKeyboardManager;
   private _lives: Lives = 3;
-
   private _dyingTime = 0;
 
   constructor(
@@ -32,19 +31,21 @@ export default class Player
   }
 
   update(deltaTime: number) {
+    if (this._lives == 0) return;
     this.updateDyingTimer(deltaTime);
     this.updatePosition(deltaTime);
   }
 
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
+    if (this._lives == 0) return;
 
     const sprite = this._dyingTime > 0 ? this.spriteDying : this.sprite;
 
     sprite.draw(context, this._position);
   }
 
-  updateLives(lives: Lives) {
+  set lives(lives: Lives) {
     if (lives < this._lives) {
       this._dyingTime = 1000;
     }
