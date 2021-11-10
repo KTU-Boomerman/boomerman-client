@@ -5,25 +5,52 @@ import { DataTransferable } from "../dtos/DataTransferable";
 import { PlayerDTO } from "../dtos/PlayerDTO";
 import { IKeyboardManager } from "../core/managers/IKeyboardManager";
 import { Game } from "../core/Game";
+import { Lives } from "../core/managers/UIManager";
 
 export default class Player
   extends GameObject
-  implements DataTransferable<PlayerDTO> {
+  implements DataTransferable<PlayerDTO>
+{
   RENDER_PRIORITY = 10;
 
   private _id: string = "";
   private _position: Position;
   private _speed = 0.2;
   private _keyboardManager?: IKeyboardManager;
+  private _lives: Lives = 3;
+  private _dyingTime = 0;
 
-  constructor(sprite: Sprite, position: Position, private game: Game) {
-    super(sprite);
+  constructor(
+    private sprite: Sprite,
+    private spriteDying: Sprite,
+    position: Position,
+    private game: Game
+  ) {
+    super();
     this._position = position;
+  }
+
+  update(deltaTime: number) {
+    if (this._lives == 0) return;
+    this.updateDyingTimer(deltaTime);
+    this.updatePosition(deltaTime);
   }
 
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
-    this.sprite.draw(context, this._position);
+    if (this._lives == 0) return;
+
+    const sprite = this._dyingTime > 0 ? this.spriteDying : this.sprite;
+
+    sprite.draw(context, this._position);
+  }
+
+  set lives(lives: Lives) {
+    if (lives < this._lives) {
+      this._dyingTime = 1000;
+    }
+
+    this._lives = lives;
   }
 
   set id(id: string) {
@@ -46,15 +73,16 @@ export default class Player
     this._keyboardManager = keyboardManager;
   }
 
-  update(deltaTime: number) {
-    this.updatePosition(deltaTime);
-  }
-
   toDTO() {
     return {
       id: this._id,
       position: this._position.toDTO(),
     };
+  }
+  
+  private updateDyingTimer(deltaTime: number) {
+    this._dyingTime -= deltaTime;
+    if (this._dyingTime < 0) this._dyingTime = 0;
   }
 
   public updatePosition(deltaTime: number) {

@@ -23,38 +23,60 @@ import { BombFactory } from "../objects/bombs/BombFactory";
 import { MapDTO } from "../dtos/MapDTO";
 import WallBuilder from "../objects/walls/WallBuilder";
 import Wall from "../objects/walls/Wall";
+import { UIManager } from "./managers/UIManager";
+import AnimatedSprite from "../sprite/AnimatedSprite";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
   player: Player;
   enemies: Map<string, Enemy>;
   bombs: Bomb[];
+  explosions: Explosion[] = [];
   walls: Wall[] = [];
   gameState: GameState;
 
   playerSprite: Sprite;
-  explosionSprite: Sprite;
+  playerDyingSprite: Sprite;
+  enemySprite: Sprite;
+  enemyDyingSprite: Sprite;
+  explosionSprite: AnimatedSprite;
 
   constructor(
     @inject("IKeyboardManager") private keyboardManager: IKeyboardManager,
     @inject("Server") private server: Server,
     @inject("GameRenderer") private gameRenderer: Renderer,
     @inject(SpriteFactory) public spriteFactory: SpriteFactory,
-    @inject(BombFactory) public bombFactory: BombFactory
+    @inject(BombFactory) public bombFactory: BombFactory,
+    @inject(UIManager) private uiManager: UIManager
   ) {
     super();
 
     this.playerSprite = this.spriteFactory.createSprite("player");
-    this.explosionSprite = this.spriteFactory.createSprite("explosion");
+    this.playerDyingSprite =
+      this.spriteFactory.createSprite("playerTransparent");
+    this.enemySprite = this.spriteFactory.createSprite("enemy");
+    this.enemyDyingSprite =
+      this.spriteFactory.createSprite("enemyTransparent");
+
+    this.explosionSprite = this.spriteFactory.createSprite(
+      "explosion"
+    ) as AnimatedSprite;
 
     this.gameState = GameState.PlayersJoining;
 
     this.enemies = new Map();
     this.bombs = [];
 
-    this.player = new Player(this.playerSprite, Position.create(0, 0), this);
+    this.player = new Player(
+      this.playerSprite,
+      this.playerDyingSprite,
+      Position.create(0, 0),
+      this
+    );
 
     this.player.keyboardManager = this.keyboardManager;
+
+    this.uiManager.render();
   }
 
   async start(): Promise<void> {
@@ -68,6 +90,23 @@ export class Game extends AbstractGame implements IKeyboardListener {
     for (const player of this.enemies.values()) {
       player.update(deltaTime);
     }
+
+    for (const explosion of this.explosions) {
+      explosion.update(deltaTime);
+    }
+
+    this.explosions = this.explosions.filter((e) => !e.isFinished);
+
+    const newExplosions = [];
+    for (const explosion of this.explosions) {
+      if (!explosion.isFinished) {
+        newExplosions.push(explosion);
+      } else {
+        this.gameRenderer.remove(explosion);
+      }
+    }
+
+    this.explosions = newExplosions;
   }
 
   private mapEvents() {
@@ -77,7 +116,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
       "Joined",
       async (playerDto, playersDto, gameStateDto, mapDto) => {
         this.loadPlayer(playerDto);
-        this.loadEnemies(playersDto, this.playerSprite);
+        this.loadEnemies(playersDto);
         this.loadMap(mapDto);
         this.gameState = gameStateDto.gameState;
       }
@@ -88,7 +127,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     });
 
     this.server.on("PlayerJoin", async (playerDto) => {
-      this.loadEnemy(playerDto, this.playerSprite);
+      this.loadEnemy(playerDto);
     });
 
     this.server.on("PlayerLeave", (playerId) => {
@@ -114,26 +153,36 @@ export class Game extends AbstractGame implements IKeyboardListener {
       this.gameRenderer.add(bomb);
     });
 
-    this.server.on("Explosion", (positionDto) => {
-      // remove bomb
-      const position = new Position(positionDto);
-      const bomb = this.bombs.find((b) => b.position.equals(position));
+    this.server.on("Explosions", (positionsDto) => {
+      positionsDto.forEach((dto) => {
+        const position = new Position(dto);
+        // remove bomb
+        const bomb = this.bombs.find((b) => b.position.equals(position));
 
-      if (bomb) {
-        this.bombs = this.bombs.filter((b) => b != bomb);
-        this.gameRenderer.remove(bomb);
+        if (bomb) {
+          this.bombs = this.bombs.filter((b) => b != bomb);
+          this.gameRenderer.remove(bomb);
+        }
+
+        // add explosion
+        const explosion = new Explosion(this.explosionSprite.clone(), position);
+        this.gameRenderer.add(explosion);
+        this.explosions.push(explosion);
+
+        // break wall
+        const wall = this.walls.find((w) => w.position.equals(position));
+        if (wall) this.gameRenderer.remove(wall);
+      });
+    });
+
+    this.server.on("UpdateLives", (playerId, lives) => {
+      if (playerId == this.player.id) {
+        this.player.lives = lives;
+        this.uiManager.updateLives(lives);
       }
 
-      // add explosion
-      const explosion = new Explosion(this.explosionSprite, position);
-
-      this.gameRenderer.add(explosion);
-
-      const wall = this.walls.find((w) => w.position.equals(position));
-      if (wall) this.gameRenderer.remove(wall);
-      setTimeout(() => {
-        this.gameRenderer.remove(explosion);
-      }, 1000);
+      const enemy = this.enemies.get(playerId);
+      if (enemy) enemy.lives = lives;
     });
   }
 
@@ -175,14 +224,14 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.server.invoke("PlaceBomb", { bombType });
   }
 
-  private loadEnemies(players: PlayerDTO[], sprite: Sprite) {
+  private loadEnemies(players: PlayerDTO[]) {
     for (const player of players) {
-      this.loadEnemy(player, sprite);
+      this.loadEnemy(player);
     }
   }
 
-  private loadEnemy(player: PlayerDTO, sprite: Sprite) {
-    const enemy = new Enemy(sprite, player);
+  private loadEnemy(player: PlayerDTO) {
+    const enemy = new Enemy(this.enemySprite, this.enemyDyingSprite, player);
     this.enemies.set(enemy.id, enemy);
 
     this.gameRenderer.add(enemy);

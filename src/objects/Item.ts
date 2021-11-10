@@ -3,8 +3,8 @@ import GameObject from "./GameObject";
 import Position from "./Position";
 
 export default class Item extends GameObject {
-  constructor(sprite: Sprite, protected _position: Position) {
-    super(sprite);
+  constructor(private sprite: Sprite, protected _position: Position) {
+    super();
   }
 
   render(context: CanvasRenderingContext2D): void {

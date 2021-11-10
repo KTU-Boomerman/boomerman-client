@@ -8,6 +8,12 @@ export default class StaticSprite implements Sprite {
     this._image = image;
   }
 
+  clone(): Sprite {
+    return new StaticSprite(this._image);
+  }
+  
+  update(_deltaTime: number): void {}
+
   draw(context: CanvasRenderingContext2D, position: Position): void {
     context.drawImage(
       this._image,
