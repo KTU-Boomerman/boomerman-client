@@ -4,7 +4,7 @@ import GameObject from "../../objects/GameObject";
 import Position from "../../objects/Position";
 import WallBuilder from "../../objects/walls/WallBuilder";
 import SpriteFactory from "../../sprite/SpriteFactory";
-import Renderer from "../Renderer";
+import { Renderer } from "../Renderer";
 import { IBackgroundManager } from "./IBackgroundManager";
 
 @injectable()

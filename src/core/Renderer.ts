@@ -1,6 +1,6 @@
 import Renderable from "../interfaces/Renderable";
 
-export default class Renderer {
+export class Renderer {
   private context: CanvasRenderingContext2D;
   private renderables: Set<Renderable> = new Set();
   private _grayscale: number = 0;
@@ -42,10 +42,16 @@ export default class Renderer {
   }
 
   set grayscale(value: number) {
-    if (value < 0) {
-      this._grayscale = 0;
-    } else if (value > 100) {
+    this._grayscale = value;
+    
+    if (this._grayscale > 100) {
       this._grayscale = 100;
     }
+
+    if (this._grayscale < 0) {
+      this._grayscale = 0;
+    }
+
+    this.render();
   }
 }
