@@ -302,6 +302,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
       this.powerups = this.powerups.filter((p) => p != powerup);
       this.gameRenderer.remove(powerup);
     }
+  }
     
   private createEffect({
     sound,
