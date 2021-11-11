@@ -16,7 +16,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictNullChecks": true,
-    "types": ["@types/jest"],
+    "types": ["@types/jest", "vite/client"],
   },
   "include": ["./src/*.ts"],
   "exclude": ["./src/*.test.ts"] 

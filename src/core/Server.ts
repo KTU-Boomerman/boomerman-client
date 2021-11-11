@@ -45,8 +45,12 @@ export default class Server {
 
   private connection: HubConnection;
   private constructor() {
+    if (!import.meta.env.VITE_SERVER_URL) {
+      throw new Error("VITE_SERVER_URL is not defined");
+    }
+
     this.connection = new HubConnectionBuilder()
-      .withUrl("http://localhost:5000/game")
+      .withUrl(import.meta.env.VITE_SERVER_URL)
       .build();
   }
 
