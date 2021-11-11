@@ -25,6 +25,8 @@ import WallBuilder from "../objects/walls/WallBuilder";
 import Wall from "../objects/walls/Wall";
 import { UIManager } from "./managers/UIManager";
 import AnimatedSprite from "../sprite/AnimatedSprite";
+import Powerup from "../objects/powerups/Powerup";
+import {PowerupFactory} from "../objects/powerups/PowerupFactory";
 import { Effect } from "../effects/Effect";
 import { Sounds } from "./managers/SoundManager";
 import { SoundEffect } from "../effects/SoundEffect";
@@ -39,6 +41,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
   bombs: Bomb[];
   explosions: Explosion[] = [];
   walls: Wall[] = [];
+  powerups: Powerup[] = [];
   gameState: GameState;
 
   playerSprite: Sprite;
@@ -56,6 +59,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     @inject("BackgroundRenderer") private backgroundRenderer: Renderer,
     @inject(SpriteFactory) public spriteFactory: SpriteFactory,
     @inject(BombFactory) public bombFactory: BombFactory,
+    @inject(PowerupFactory) public powerupFactory: PowerupFactory,
     @inject(UIManager) private uiManager: UIManager
   ) {
     super();
@@ -179,6 +183,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
           this.gameRenderer.remove(bomb);
         }
 
+        this.removePowerup(new Position(position));
+
         // add explosion
         const explosion = new Explosion(this.explosionSprite.clone(), position);
         this.gameRenderer.add(explosion);
@@ -202,6 +208,18 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
       const enemy = this.enemies.get(playerId);
       if (enemy) enemy.lives = lives;
+    });
+
+    this.server.on("PlacePowerup", (powerupDto) => {
+      const position = new Position(powerupDto.position);
+      const powerup = this.powerupFactory.createBomb(position, powerupDto.powerupType);
+
+      this.powerups.push(powerup);
+      this.gameRenderer.add(powerup);
+    });
+
+    this.server.on("RemovePowerup", (positionDto) => {
+      this.removePowerup(new Position(positionDto));
     });
   }
 
@@ -278,6 +296,13 @@ export class Game extends AbstractGame implements IKeyboardListener {
     });
   }
 
+  private removePowerup(position: Position) {
+    const powerup = this.powerups.find((p) => p.position.equals(position));
+    if (powerup) {
+      this.powerups = this.powerups.filter((p) => p != powerup);
+      this.gameRenderer.remove(powerup);
+    }
+    
   private createEffect({
     sound,
     visual,

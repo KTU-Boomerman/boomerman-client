@@ -12,10 +12,6 @@ export default class BasicBomb
     super(sprite, position);
   }
 
-  public explode(): void {
-    throw new Error("Method not implemented.");
-  }
-
   public toDTO(): BombDTO {
     return {
       bombType: BombType.Regular,
