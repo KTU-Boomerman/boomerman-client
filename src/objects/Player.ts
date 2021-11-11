@@ -9,8 +9,7 @@ import { Lives } from "../core/managers/UIManager";
 
 export default class Player
   extends GameObject
-  implements DataTransferable<PlayerDTO>
-{
+  implements DataTransferable<PlayerDTO> {
   RENDER_PRIORITY = 10;
 
   private _id: string = "";
@@ -79,7 +78,7 @@ export default class Player
       position: this._position.toDTO(),
     };
   }
-  
+
   private updateDyingTimer(deltaTime: number) {
     this._dyingTime -= deltaTime;
     if (this._dyingTime < 0) this._dyingTime = 0;

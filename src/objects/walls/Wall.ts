@@ -6,7 +6,11 @@ export default class Wall extends GameObject {
   private _isDestructible: boolean;
   private _position: Position;
 
-  constructor(private sprite: Sprite, isDestructible: boolean, position: Position) {
+  constructor(
+    private sprite: Sprite,
+    isDestructible: boolean,
+    position: Position
+  ) {
     super();
     this._isDestructible = isDestructible;
     this._position = position;

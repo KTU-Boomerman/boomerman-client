@@ -1,7 +1,4 @@
-import {
-  HubConnection,
-  HubConnectionBuilder,
-} from "@microsoft/signalr";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { BombDTO } from "../dtos/BombDTO";
 import { CreateBombDTO } from "../dtos/CreateBombDTO";
 import { GameStateDTO } from "../dtos/GameStateDTO";

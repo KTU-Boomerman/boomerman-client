@@ -1,7 +1,6 @@
 import Position from "../objects/Position";
 import Sprite from "./Sprite";
 
-
 interface AnimatedSpriteOptions {
   isAnimated: true;
   numColumns: number;
@@ -15,7 +14,7 @@ interface AnimatedSpriteOptions {
 export default class AnimatedSprite implements Sprite {
   private _image: ImageBitmap;
   private _options: AnimatedSpriteOptions;
-  
+
   private _frameCount: number;
   private _time = 0;
   private _currentFrame = 0;
@@ -44,13 +43,17 @@ export default class AnimatedSprite implements Sprite {
       this._time = 0;
       this._currentFrame = (this._currentFrame + 1) % this._frameCount;
     }
-    
+
     const { numColumns, numRows } = this._options;
     if (this._currentFrame === numColumns * numRows - 1) {
       this._lastFrameDrawn = true;
     }
 
-    if (this._lastFrameDrawn && this._options.playsOnce && this._currentFrame === 0) {
+    if (
+      this._lastFrameDrawn &&
+      this._options.playsOnce &&
+      this._currentFrame === 0
+    ) {
       this._isFinished = true;
     }
   }
@@ -68,6 +71,16 @@ export default class AnimatedSprite implements Sprite {
     const sx = column * frameWidth;
     const sy = row * frameHeight;
 
-    context.drawImage(this._image, sx, sy, frameWidth, frameHeight, position.x, position.y, frameWidth, frameHeight);
+    context.drawImage(
+      this._image,
+      sx,
+      sy,
+      frameWidth,
+      frameHeight,
+      position.x,
+      position.y,
+      frameWidth,
+      frameHeight
+    );
   }
 }

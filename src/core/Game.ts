@@ -15,7 +15,7 @@ import {
   KeyState,
 } from "./managers/IKeyboardManager";
 import Server from "./Server";
-import Renderer from "./Renderer";
+import { Renderer } from "./Renderer";
 import SpriteFactory from "../sprite/SpriteFactory";
 import { PositionDTO } from "../dtos/PositionDTO";
 import { Explosion } from "../objects/Explosion";
@@ -27,6 +27,12 @@ import { UIManager } from "./managers/UIManager";
 import AnimatedSprite from "../sprite/AnimatedSprite";
 import Powerup from "../objects/powerups/Powerup";
 import {PowerupFactory} from "../objects/powerups/PowerupFactory";
+import { Effect } from "../effects/Effect";
+import { Sounds } from "./managers/SoundManager";
+import { SoundEffect } from "../effects/SoundEffect";
+import { NullEffect } from "../effects/NullEffect";
+import { GrayscaleDecorator } from "../effects/GrayscaleDecorator";
+import { ShakeDecorator } from "../effects/ShakeDecorator";
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -44,10 +50,13 @@ export class Game extends AbstractGame implements IKeyboardListener {
   enemyDyingSprite: Sprite;
   explosionSprite: AnimatedSprite;
 
+  deathEffect: Effect;
+
   constructor(
     @inject("IKeyboardManager") private keyboardManager: IKeyboardManager,
     @inject("Server") private server: Server,
     @inject("GameRenderer") private gameRenderer: Renderer,
+    @inject("BackgroundRenderer") private backgroundRenderer: Renderer,
     @inject(SpriteFactory) public spriteFactory: SpriteFactory,
     @inject(BombFactory) public bombFactory: BombFactory,
     @inject(PowerupFactory) public powerupFactory: PowerupFactory,
@@ -56,11 +65,11 @@ export class Game extends AbstractGame implements IKeyboardListener {
     super();
 
     this.playerSprite = this.spriteFactory.createSprite("player");
-    this.playerDyingSprite =
-      this.spriteFactory.createSprite("playerTransparent");
+    this.playerDyingSprite = this.spriteFactory.createSprite(
+      "playerTransparent"
+    );
     this.enemySprite = this.spriteFactory.createSprite("enemy");
-    this.enemyDyingSprite =
-      this.spriteFactory.createSprite("enemyTransparent");
+    this.enemyDyingSprite = this.spriteFactory.createSprite("enemyTransparent");
 
     this.explosionSprite = this.spriteFactory.createSprite(
       "explosion"
@@ -81,6 +90,12 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.player.keyboardManager = this.keyboardManager;
 
     this.uiManager.render();
+
+    this.deathEffect = this.createEffect({
+      sound: "death",
+      visual: "grayscale",
+      animation: "shake",
+    });
   }
 
   async start(): Promise<void> {
@@ -185,6 +200,10 @@ export class Game extends AbstractGame implements IKeyboardListener {
       if (playerId == this.player.id) {
         this.player.lives = lives;
         this.uiManager.updateLives(lives);
+
+        if (lives <= 0) {
+          this.deathEffect.play();
+        }
       }
 
       const enemy = this.enemies.get(playerId);
@@ -283,5 +302,27 @@ export class Game extends AbstractGame implements IKeyboardListener {
       this.powerups = this.powerups.filter((p) => p != powerup);
       this.gameRenderer.remove(powerup);
     }
+    
+  private createEffect({
+    sound,
+    visual,
+    animation,
+  }: {
+    sound?: Sounds;
+    visual?: "grayscale";
+    animation?: "shake";
+  }): Effect {
+    let effect = sound ? new SoundEffect(sound) : new NullEffect();
+
+    if (visual === "grayscale") {
+      effect = new GrayscaleDecorator(effect, [
+        this.gameRenderer,
+        this.backgroundRenderer,
+      ]);
+    }
+
+    if (animation === "shake") effect = new ShakeDecorator(effect);
+
+    return effect;
   }
 }

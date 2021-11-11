@@ -3,7 +3,7 @@ import Position from "../../objects/Position";
 import Sprite from "../../sprite/Sprite";
 import SpriteFactory from "../../sprite/SpriteFactory";
 import { Heart } from "../../ui/Heart";
-import Renderer from "../Renderer";
+import { Renderer } from "../Renderer";
 
 export type Lives = 0 | 1 | 2 | 3;
 

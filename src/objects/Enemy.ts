@@ -10,7 +10,11 @@ export default class Enemy extends GameObject {
   private _lives: Lives = 3;
   private _dyingTime = 0;
 
-  constructor(private sprite: Sprite, private spriteDying: Sprite, playerDto: PlayerDTO) {
+  constructor(
+    private sprite: Sprite,
+    private spriteDying: Sprite,
+    playerDto: PlayerDTO
+  ) {
     super();
     this._id = playerDto.id;
     this._position = new Position(playerDto.position);
@@ -31,12 +35,11 @@ export default class Enemy extends GameObject {
     this._lives = lives;
   }
 
-  
   update(deltaTime: number) {
     if (this._lives == 0) return;
     this.updateDyingTimer(deltaTime);
   }
-  
+
   private updateDyingTimer(deltaYime: number) {
     this._dyingTime -= deltaYime;
     if (this._dyingTime < 0) this._dyingTime = 0;
