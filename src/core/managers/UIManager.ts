@@ -3,6 +3,7 @@ import Position from "../../objects/Position";
 import Sprite from "../../sprite/Sprite";
 import SpriteFactory from "../../sprite/SpriteFactory";
 import { Heart } from "../../ui/Heart";
+import { Score } from "../../ui/Score";
 import { Renderer } from "../Renderer";
 
 export type Lives = 0 | 1 | 2 | 3;
@@ -10,6 +11,7 @@ export type Lives = 0 | 1 | 2 | 3;
 @singleton()
 export class UIManager {
   private hearts: [Heart, Heart, Heart];
+  private score: Score;
 
   private heartSprite: Sprite;
   private heartGreySprite: Sprite;
@@ -26,10 +28,13 @@ export class UIManager {
       new Heart(Position.create(40, 8), this.heartSprite),
       new Heart(Position.create(72, 8), this.heartSprite),
     ];
+    this.score = new Score();
 
     for (const heart of this.hearts) {
       this.renderer.add(heart);
     }
+    
+    this.renderer.add(this.score);
 
     this.render();
   }
@@ -40,6 +45,11 @@ export class UIManager {
         i < lives ? this.heartSprite : this.heartGreySprite;
     }
 
+    this.render();
+  }
+
+  updateScore(score: number) {
+    this.score.score = score;
     this.render();
   }
 

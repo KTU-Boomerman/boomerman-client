@@ -5,8 +5,8 @@ export class Renderer {
   private renderables: Set<Renderable> = new Set();
   private _grayscale: number = 0;
 
-  constructor(private canvas: HTMLCanvasElement) {
-    this.context = canvas.getContext("2d")!;
+  constructor(private canvas: HTMLCanvasElement, contextOptions: CanvasRenderingContext2DSettings = {}) {
+    this.context = canvas.getContext("2d", contextOptions)!;
   }
 
   add(renderable: Renderable) {

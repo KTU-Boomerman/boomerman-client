@@ -26,7 +26,7 @@ import Wall from "../objects/walls/Wall";
 import { UIManager } from "./managers/UIManager";
 import AnimatedSprite from "../sprite/AnimatedSprite";
 import Powerup from "../objects/powerups/Powerup";
-import {PowerupFactory} from "../objects/powerups/PowerupFactory";
+import { PowerupFactory } from "../objects/powerups/PowerupFactory";
 import { Effect } from "../effects/Effect";
 import { Sounds } from "./managers/SoundManager";
 import { SoundEffect } from "../effects/SoundEffect";
@@ -65,9 +65,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
     super();
 
     this.playerSprite = this.spriteFactory.createSprite("player");
-    this.playerDyingSprite = this.spriteFactory.createSprite(
-      "playerTransparent"
-    );
+    this.playerDyingSprite =
+      this.spriteFactory.createSprite("playerTransparent");
     this.enemySprite = this.spriteFactory.createSprite("enemy");
     this.enemyDyingSprite = this.spriteFactory.createSprite("enemyTransparent");
 
@@ -201,18 +200,23 @@ export class Game extends AbstractGame implements IKeyboardListener {
         this.player.lives = lives;
         this.uiManager.updateLives(lives);
 
-        if (lives <= 0) {
-          this.deathEffect.play();
-        }
+        if (lives <= 0) this.deathEffect.play();
       }
 
       const enemy = this.enemies.get(playerId);
       if (enemy) enemy.lives = lives;
     });
 
+    this.server.on("UpdateScore", (playerId, score) => {
+      if (playerId == this.player.id) this.uiManager.updateScore(score);
+    });
+
     this.server.on("PlacePowerup", (powerupDto) => {
       const position = new Position(powerupDto.position);
-      const powerup = this.powerupFactory.createBomb(position, powerupDto.powerupType);
+      const powerup = this.powerupFactory.createBomb(
+        position,
+        powerupDto.powerupType
+      );
 
       this.powerups.push(powerup);
       this.gameRenderer.add(powerup);
@@ -303,7 +307,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
       this.gameRenderer.remove(powerup);
     }
   }
-    
+
   private createEffect({
     sound,
     visual,

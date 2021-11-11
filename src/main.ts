@@ -29,7 +29,7 @@ container.register("GameRenderer", {
 });
 
 container.register("UIRenderer", {
-  useValue: new Renderer(uiCanvas),
+  useValue: new Renderer(uiCanvas, { alpha: true }),
 });
 
 container.register<IKeyboardManager>("IKeyboardManager", {

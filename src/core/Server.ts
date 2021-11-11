@@ -6,7 +6,7 @@ import { PlayerDTO } from "../dtos/PlayerDTO";
 import { PositionDTO } from "../dtos/PositionDTO";
 import { MapDTO } from "../dtos/MapDTO";
 import { Lives } from "./managers/UIManager";
-import {PowerupDTO} from "../dtos/PowerupDTO";
+import { PowerupDTO } from "../dtos/PowerupDTO";
 
 type InvokeEventMap = {
   PlayerJoin: () => void;
@@ -32,6 +32,7 @@ type OnEventMap = {
   Notification: (title: string, message: string) => void;
   Explosions: (positions: PositionDTO[]) => void;
   UpdateLives: (playerId: string, lives: Lives) => void;
+  UpdateScore: (playerId: string, score: number) => void;
   PlacePowerup: (powerup: PowerupDTO) => void;
   RemovePowerup: (position: PositionDTO) => void;
 };
