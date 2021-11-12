@@ -211,6 +211,10 @@ export class Game extends AbstractGame implements IKeyboardListener {
       if (playerId == this.player.id) this.uiManager.updateScore(score);
     });
 
+    this.server.on("UpdateBombCount", (playerId, count) => {
+      if (playerId == this.player.id) this.uiManager.updateBombCount(count);
+    });
+
     this.server.on("PlacePowerup", (powerupDto) => {
       const position = new Position(powerupDto.position);
       const powerup = this.powerupFactory.createBomb(

@@ -33,6 +33,7 @@ type OnEventMap = {
   Explosions: (positions: PositionDTO[]) => void;
   UpdateLives: (playerId: string, lives: Lives) => void;
   UpdateScore: (playerId: string, score: number) => void;
+  UpdateBombCount: (playerId: string, score: number) => void;
   PlacePowerup: (powerup: PowerupDTO) => void;
   RemovePowerup: (position: PositionDTO) => void;
 };

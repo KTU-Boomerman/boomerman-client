@@ -5,6 +5,7 @@ import SpriteFactory from "../../sprite/SpriteFactory";
 import { Heart } from "../../ui/Heart";
 import { Score } from "../../ui/Score";
 import { Renderer } from "../Renderer";
+import {BombCount} from "../../ui/BombCount";
 
 export type Lives = 0 | 1 | 2 | 3;
 
@@ -12,6 +13,7 @@ export type Lives = 0 | 1 | 2 | 3;
 export class UIManager {
   private hearts: [Heart, Heart, Heart];
   private score: Score;
+  private bombCount: BombCount;
 
   private heartSprite: Sprite;
   private heartGreySprite: Sprite;
@@ -29,12 +31,14 @@ export class UIManager {
       new Heart(Position.create(72, 8), this.heartSprite),
     ];
     this.score = new Score();
+    this.bombCount = new BombCount();
 
     for (const heart of this.hearts) {
       this.renderer.add(heart);
     }
     
     this.renderer.add(this.score);
+    this.renderer.add(this.bombCount);
 
     this.render();
   }
@@ -50,6 +54,11 @@ export class UIManager {
 
   updateScore(score: number) {
     this.score.score = score;
+    this.render();
+  }
+
+  updateBombCount(count: number) {
+    this.bombCount.count = count;
     this.render();
   }
 
