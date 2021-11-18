@@ -1,6 +1,6 @@
-import Sprite from "../../sprite/Sprite";
-import Position from "../Position";
-import Wall from "./Wall";
+import Sprite from '../../sprite/Sprite';
+import Position from '../Position';
+import Wall from './Wall';
 
 export default class WallBuilder {
   private isDestructible = false;
@@ -23,8 +23,8 @@ export default class WallBuilder {
   }
 
   build(): Wall {
-    if (this.sprite == null) throw new Error("Sprite is not set");
-    if (this.position == null) throw new Error("Position is not set");
+    if (this.sprite == null) throw new Error('Sprite is not set');
+    if (this.position == null) throw new Error('Position is not set');
     return new Wall(this.sprite, this.isDestructible, this.position);
   }
 }

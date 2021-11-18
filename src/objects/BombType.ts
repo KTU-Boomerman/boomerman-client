@@ -1,6 +1,6 @@
 export enum BombType {
-  Regular = "Regular",
-  Wave = "Wave",
-  Pulse = "Pulse",
-  Boomerang = "Boomerang",
+  Regular = 'Regular',
+  Wave = 'Wave',
+  Pulse = 'Pulse',
+  Boomerang = 'Boomerang',
 }

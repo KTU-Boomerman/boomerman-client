@@ -1,7 +1,7 @@
-import { singleton } from "tsyringe";
-import AnimatedSprite from "./AnimatedSprite";
-import Sprite from "./Sprite";
-import StaticSprite from "./StaticSprite";
+import { singleton } from 'tsyringe';
+import AnimatedSprite from './AnimatedSprite';
+import Sprite from './Sprite';
+import StaticSprite from './StaticSprite';
 
 interface StaticSpriteData {
   file: string;
@@ -21,85 +21,85 @@ interface AnimatedSpriteData extends StaticSpriteData {
 type SpriteData = StaticSpriteData | AnimatedSpriteData;
 
 type SpriteKey =
-  | "player"
-  | "playerTransparent"
-  | "enemy"
-  | "enemyTransparent"
-  | "grass"
-  | "wall"
-  | "wood"
-  | "regularBomb"
-  | "destructibleWall"
-  | "bBombPowerup"
-  | "sBombPowerup"
-  | "bHealthPowerup"
-  | "sHealthPowerup"
-  | "bSpeedPowerup"
-  | "sSpeedPowerup"
-  | "waveBomb"
-  | "pulseBomb"
-  | "boomerangBomb"
-  | "explosion"
-  | "heart"
-  | "heartGrey";
+  | 'player'
+  | 'playerTransparent'
+  | 'enemy'
+  | 'enemyTransparent'
+  | 'grass'
+  | 'wall'
+  | 'wood'
+  | 'regularBomb'
+  | 'destructibleWall'
+  | 'bBombPowerup'
+  | 'sBombPowerup'
+  | 'bHealthPowerup'
+  | 'sHealthPowerup'
+  | 'bSpeedPowerup'
+  | 'sSpeedPowerup'
+  | 'waveBomb'
+  | 'pulseBomb'
+  | 'boomerangBomb'
+  | 'explosion'
+  | 'heart'
+  | 'heartGrey';
 
 export const sprites: Record<SpriteKey, SpriteData> = {
   player: {
-    file: "../../assets/images/player.png",
+    file: '../../assets/images/player.png',
   },
   playerTransparent: {
-    file: "../../assets/images/playerTransparent.png",
+    file: '../../assets/images/playerTransparent.png',
   },
   enemy: {
-    file: "../../assets/images/enemy.png",
+    file: '../../assets/images/enemy.png',
   },
   enemyTransparent: {
-    file: "../../assets/images/enemyTransparent.png",
+    file: '../../assets/images/enemyTransparent.png',
   },
   grass: {
-    file: "../../assets/images/grass.png",
+    file: '../../assets/images/grass.png',
   },
   wall: {
-    file: "../../assets/images/wall.png",
+    file: '../../assets/images/wall.png',
   },
   wood: {
-    file: "../../assets/images/wood.png",
+    file: '../../assets/images/wood.png',
   },
   regularBomb: {
-    file: "../../assets/images/regularBomb.png",
+    file: '../../assets/images/regularBomb.png',
   },
   destructibleWall: {
-    file: "../../assets/images/destructibleWall.png",
+    file: '../../assets/images/destructibleWall.png',
   },
   bBombPowerup: {
-    file: "../../assets/images/bBombPowerup.png",
+    file: '../../assets/images/bBombPowerup.png',
   },
   sBombPowerup: {
-    file: "../../assets/images/sBombPowerup.png",
+    file: '../../assets/images/sBombPowerup.png',
   },
   bHealthPowerup: {
-    file: "../../assets/images/bHealthPowerup.png",
+    file: '../../assets/images/bHealthPowerup.png',
   },
   sHealthPowerup: {
-    file: "../../assets/images/sHealthPowerup.png",
+    file: '../../assets/images/sHealthPowerup.png',
   },
   bSpeedPowerup: {
-    file: "../../assets/images/bSpeedPowerup.png",
+    file: '../../assets/images/bSpeedPowerup.png',
   },
   sSpeedPowerup: {
-    file: "../../assets/images/sSpeedPowerup.png",
+    file: '../../assets/images/sSpeedPowerup.png',
   },
   waveBomb: {
-    file: "../../assets/images/waveBomb.png",
+    file: '../../assets/images/waveBomb.png',
   },
   pulseBomb: {
-    file: "../../assets/images/pulseBomb.png",
+    file: '../../assets/images/pulseBomb.png',
   },
   boomerangBomb: {
-    file: "../../assets/images/boomerangBomb.png",
+    file: '../../assets/images/boomerangBomb.png',
   },
   explosion: {
-    file: "../../assets/images/explosions.png",
+    file: '../../assets/images/explosions.png',
     isAnimated: true,
     numColumns: 4,
     numRows: 4,
@@ -109,10 +109,10 @@ export const sprites: Record<SpriteKey, SpriteData> = {
     playsOnce: true,
   },
   heart: {
-    file: "../../assets/images/heart.png",
+    file: '../../assets/images/heart.png',
   },
   heartGrey: {
-    file: "../../assets/images/heartGrey.png",
+    file: '../../assets/images/heartGrey.png',
   },
 };
 

@@ -1,12 +1,22 @@
-import Renderable from "../interfaces/Renderable";
+import Renderable from '../interfaces/Renderable';
 
 export class Renderer {
   private context: CanvasRenderingContext2D;
   private renderables: Set<Renderable> = new Set();
-  private _grayscale: number = 0;
+  private _grayscale = 0;
 
   constructor(private canvas: HTMLCanvasElement, contextOptions: CanvasRenderingContext2DSettings = {}) {
-    this.context = canvas.getContext("2d", contextOptions)!;
+    if (!canvas) {
+      throw new Error('No canvas provided');
+    }
+
+    const context = canvas.getContext('2d', contextOptions);
+
+    if (context == null) {
+      throw new Error('Could not get context');
+    }
+
+    this.context = context;
   }
 
   add(renderable: Renderable) {
@@ -26,9 +36,7 @@ export class Renderer {
 
     this.context.filter = `grayscale(${this.grayscale}%)`;
 
-    for (const renderable of Array.from(this.renderables).sort(
-      (a, b) => a.RENDER_PRIORITY - b.RENDER_PRIORITY
-    )) {
+    for (const renderable of Array.from(this.renderables).sort((a, b) => a.RENDER_PRIORITY - b.RENDER_PRIORITY)) {
       renderable.render(this.context);
     }
   }

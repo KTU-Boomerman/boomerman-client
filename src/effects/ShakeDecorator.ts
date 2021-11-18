@@ -1,5 +1,5 @@
-import { Decorator } from "./Decorator";
-import { Effect } from "./Effect";
+import { Decorator } from './Decorator';
+import { Effect } from './Effect';
 
 export class ShakeDecorator extends Decorator {
   constructor(component: Effect) {
@@ -8,6 +8,6 @@ export class ShakeDecorator extends Decorator {
 
   public play() {
     super.play();
-    document.getElementById("stage")!.classList.add("shake");
+    document.getElementById('stage')?.classList.add('shake');
   }
 }

@@ -1,20 +1,16 @@
-import Position from "./Position";
-import GameObject from "./GameObject";
-import Sprite from "../sprite/Sprite";
-import { PlayerDTO } from "../dtos/PlayerDTO";
-import { Lives } from "../core/managers/UIManager";
+import Position from './Position';
+import GameObject from './GameObject';
+import Sprite from '../sprite/Sprite';
+import { PlayerDTO } from '../dtos/PlayerDTO';
+import { Lives } from '../core/managers/UIManager';
 
 export default class Enemy extends GameObject {
-  private _id: string = "";
+  private _id = '';
   private _position: Position;
   private _lives: Lives = 3;
   private _dyingTime = 0;
 
-  constructor(
-    private sprite: Sprite,
-    private spriteDying: Sprite,
-    playerDto: PlayerDTO
-  ) {
+  constructor(private sprite: Sprite, private spriteDying: Sprite, playerDto: PlayerDTO) {
     super();
     this._id = playerDto.id;
     this._position = new Position(playerDto.position);

@@ -1,5 +1,5 @@
-import { DataTransferable } from "../dtos/DataTransferable";
-import { PositionDTO } from "../dtos/PositionDTO";
+import { DataTransferable } from '../dtos/DataTransferable';
+import { PositionDTO } from '../dtos/PositionDTO';
 
 export default class Position implements DataTransferable<PositionDTO> {
   private _x: number;
@@ -18,12 +18,12 @@ export default class Position implements DataTransferable<PositionDTO> {
     return this._x;
   }
 
-  get y(): number {
-    return this._y;
-  }
-
   set x(x: number) {
     this._x = x;
+  }
+
+  get y(): number {
+    return this._y;
   }
 
   set y(y: number) {

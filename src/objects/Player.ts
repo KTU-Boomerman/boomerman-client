@@ -1,30 +1,23 @@
-import Position from "./Position";
-import GameObject from "./GameObject";
-import Sprite from "../sprite/Sprite";
-import { DataTransferable } from "../dtos/DataTransferable";
-import { PlayerDTO } from "../dtos/PlayerDTO";
-import { IKeyboardManager } from "../core/managers/IKeyboardManager";
-import { Game } from "../core/Game";
-import { Lives } from "../core/managers/UIManager";
+import Position from './Position';
+import GameObject from './GameObject';
+import Sprite from '../sprite/Sprite';
+import { DataTransferable } from '../dtos/DataTransferable';
+import { PlayerDTO } from '../dtos/PlayerDTO';
+import { IKeyboardManager } from '../core/managers/IKeyboardManager';
+import { Game } from '../core/Game';
+import { Lives } from '../core/managers/UIManager';
 
-export default class Player
-  extends GameObject
-  implements DataTransferable<PlayerDTO> {
+export default class Player extends GameObject implements DataTransferable<PlayerDTO> {
   RENDER_PRIORITY = 10;
 
-  private _id: string = "";
+  private _id = '';
   private _position: Position;
   private _speed = 0.2;
   private _keyboardManager?: IKeyboardManager;
   private _lives: Lives = 3;
   private _dyingTime = 0;
 
-  constructor(
-    private sprite: Sprite,
-    private spriteDying: Sprite,
-    position: Position,
-    private game: Game
-  ) {
+  constructor(private sprite: Sprite, private spriteDying: Sprite, position: Position, private game: Game) {
     super();
     this._position = position;
   }
@@ -92,23 +85,20 @@ export default class Player
 
     const newPosition = Position.create(
       this._position.x + dx * this._speed * deltaTime,
-      this._position.y + dy * this._speed * deltaTime
+      this._position.y + dy * this._speed * deltaTime,
     );
 
-    this.game.onPlayerPositionUpdate(
-      this._position.toDTO(),
-      newPosition.toDTO()
-    );
+    this.game.onPlayerPositionUpdate(this._position.toDTO(), newPosition.toDTO());
   }
 
   private getMoveDirection(): [number, number] {
     let x = 0;
     let y = 0;
 
-    if (this._keyboardManager?.isPressed("ArrowUp")) y--;
-    if (this._keyboardManager?.isPressed("ArrowDown")) y++;
-    if (this._keyboardManager?.isPressed("ArrowRight")) x++;
-    if (this._keyboardManager?.isPressed("ArrowLeft")) x--;
+    if (this._keyboardManager?.isPressed('ArrowUp')) y--;
+    if (this._keyboardManager?.isPressed('ArrowDown')) y++;
+    if (this._keyboardManager?.isPressed('ArrowRight')) x++;
+    if (this._keyboardManager?.isPressed('ArrowLeft')) x--;
 
     if (x != 0 && y != 0) {
       x *= Math.sqrt(0.5);

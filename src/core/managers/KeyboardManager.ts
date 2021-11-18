@@ -1,10 +1,4 @@
-import {
-  IKeyboardListener,
-  IKeyboardManager,
-  Key,
-  KeyState,
-  USED_KEYS,
-} from "./IKeyboardManager";
+import { IKeyboardListener, IKeyboardManager, Key, KeyState, USED_KEYS } from './IKeyboardManager';
 
 export class KeyboardManager implements IKeyboardManager {
   private pressedKeys: Set<Key> = new Set();
@@ -15,7 +9,7 @@ export class KeyboardManager implements IKeyboardManager {
   constructor() {
     this._listeners = USED_KEYS.reduce(
       (acc, key) => ({ ...acc, [key]: [] }),
-      {} as { [key in Key]: IKeyboardListener[] }
+      {} as { [key in Key]: IKeyboardListener[] },
     );
   }
 
@@ -36,7 +30,7 @@ export class KeyboardManager implements IKeyboardManager {
       return;
     }
 
-    if (state === "pressed") {
+    if (state === 'pressed') {
       this.pressedKeys.add(key);
     } else {
       this.pressedKeys.delete(key);
@@ -61,11 +55,11 @@ export class KeyboardManager implements IKeyboardManager {
 export const createKeyboardManager = () => {
   const keyboardManager = new KeyboardManager();
 
-  document.addEventListener("keydown", (event) => {
-    keyboardManager.emit(event.code, "pressed");
+  document.addEventListener('keydown', (event) => {
+    keyboardManager.emit(event.code, 'pressed');
   });
-  document.addEventListener("keyup", (event) => {
-    keyboardManager.emit(event.code, "released");
+  document.addEventListener('keyup', (event) => {
+    keyboardManager.emit(event.code, 'released');
   });
 
   return keyboardManager;

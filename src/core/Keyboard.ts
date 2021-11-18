@@ -1,4 +1,4 @@
-const USED_KEYS = ["KeyW", "KeyA", "KeyS", "KeyD"] as const;
+const USED_KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD'] as const;
 
 export type Key = typeof USED_KEYS[number];
 
@@ -12,8 +12,8 @@ export class Keyboard {
   }
 
   private constructor() {
-    document.addEventListener("keydown", this.onKeyDown.bind(this));
-    document.addEventListener("keyup", this.onKeyUp.bind(this));
+    document.addEventListener('keydown', this.onKeyDown.bind(this));
+    document.addEventListener('keyup', this.onKeyUp.bind(this));
   }
 
   private pressedKeys: Set<Key> = new Set();

@@ -1,5 +1,5 @@
-import Item from "../Item";
-import Position from "../Position";
+import Item from '../Item';
+import Position from '../Position';
 
 export default abstract class Bomb extends Item {
   RENDER_PRIORITY = 1;

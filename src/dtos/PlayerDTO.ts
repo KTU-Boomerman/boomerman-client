@@ -1,4 +1,4 @@
-import { PositionDTO } from "./PositionDTO";
+import { PositionDTO } from './PositionDTO';
 
 export interface PlayerDTO {
   id: string;

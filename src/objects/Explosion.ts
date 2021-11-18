@@ -1,6 +1,6 @@
-import AnimatedSprite from "../sprite/AnimatedSprite";
-import GameObject from "./GameObject";
-import Position from "./Position";
+import AnimatedSprite from '../sprite/AnimatedSprite';
+import GameObject from './GameObject';
+import Position from './Position';
 
 export class Explosion extends GameObject {
   RENDER_PRIORITY = 10;

@@ -1,4 +1,4 @@
-import Toastify from "toastify-js";
+import Toastify from 'toastify-js';
 
 export const showNotification = (title: string, message: string) => {
   Toastify({

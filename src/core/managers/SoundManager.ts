@@ -1,5 +1,5 @@
 const soundFiles = {
-  death: "../../../assets/sounds/death.mp3",
+  death: '../../../assets/sounds/death.mp3',
 } as const;
 
 export type Sounds = keyof typeof soundFiles;

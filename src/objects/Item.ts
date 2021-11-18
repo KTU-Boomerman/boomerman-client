@@ -1,6 +1,6 @@
-import Sprite from "../sprite/Sprite";
-import GameObject from "./GameObject";
-import Position from "./Position";
+import Sprite from '../sprite/Sprite';
+import GameObject from './GameObject';
+import Position from './Position';
 
 export default class Item extends GameObject {
   constructor(private sprite: Sprite, protected _position: Position) {

@@ -1,11 +1,11 @@
-import { inject, injectable } from "tsyringe";
-import defaultMap from "../../../assets/maps/default";
-import GameObject from "../../objects/GameObject";
-import Position from "../../objects/Position";
-import WallBuilder from "../../objects/walls/WallBuilder";
-import SpriteFactory from "../../sprite/SpriteFactory";
-import { Renderer } from "../Renderer";
-import { IBackgroundManager } from "./IBackgroundManager";
+import { inject, injectable } from 'tsyringe';
+import defaultMap from '../../../assets/maps/default';
+import GameObject from '../../objects/GameObject';
+import Position from '../../objects/Position';
+import WallBuilder from '../../objects/walls/WallBuilder';
+import SpriteFactory from '../../sprite/SpriteFactory';
+import { Renderer } from '../Renderer';
+import { IBackgroundManager } from './IBackgroundManager';
 
 @injectable()
 export class BackgroundManager implements IBackgroundManager {
@@ -13,18 +13,16 @@ export class BackgroundManager implements IBackgroundManager {
 
   constructor(
     @inject(SpriteFactory) private spriteFactory: SpriteFactory,
-    @inject("BackgroundRenderer") private renderer: Renderer
+    @inject('BackgroundRenderer') private renderer: Renderer,
   ) {}
 
   buildBackground(map: string[][] = defaultMap) {
     this.renderer.removeAll();
 
     const nonDestructableWallBuilder = new WallBuilder()
-      .setSprite(this.spriteFactory.createSprite("wall"))
+      .setSprite(this.spriteFactory.createSprite('wall'))
       .setIsDestructible(false);
-    const grassBuilder = new WallBuilder().setSprite(
-      this.spriteFactory.createSprite("grass")
-    );
+    const grassBuilder = new WallBuilder().setSprite(this.spriteFactory.createSprite('grass'));
 
     for (let y = 0; y < map.length; y++) {
       const row = map[y];
@@ -35,12 +33,10 @@ export class BackgroundManager implements IBackgroundManager {
         const position = Position.create(x * 32, y * 32);
 
         switch (cell) {
-          case "ndw":
-            this.map[y][x] = nonDestructableWallBuilder
-              .setPosition(position)
-              .build();
+          case 'ndw':
+            this.map[y][x] = nonDestructableWallBuilder.setPosition(position).build();
             break;
-          case "grs":
+          case 'grs':
             this.map[y][x] = grassBuilder.setPosition(position).build();
             break;
         }

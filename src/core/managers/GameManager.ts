@@ -1,6 +1,6 @@
-import Stats from "stats.js";
-import Game from "../AbstractGame";
-import { Renderer } from "../Renderer";
+import Stats from 'stats.js';
+import Game from '../AbstractGame';
+import { Renderer } from '../Renderer';
 
 // TODO: add only in development mode
 const stats = new Stats();
@@ -8,8 +8,8 @@ stats.showPanel(0);
 document.body.appendChild(stats.dom);
 
 export default class GameManager {
-  private last: number = 0;
-  private deltaTime: number = 0;
+  private last = 0;
+  private deltaTime = 0;
   private game: Game;
   private renderer: Renderer;
   private isLoading = true;
