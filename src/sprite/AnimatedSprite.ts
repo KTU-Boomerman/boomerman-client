@@ -1,5 +1,5 @@
-import Position from "../objects/Position";
-import Sprite from "./Sprite";
+import Position from '../objects/Position';
+import Sprite from './Sprite';
 
 interface AnimatedSpriteOptions {
   isAnimated: true;
@@ -49,11 +49,7 @@ export default class AnimatedSprite implements Sprite {
       this._lastFrameDrawn = true;
     }
 
-    if (
-      this._lastFrameDrawn &&
-      this._options.playsOnce &&
-      this._currentFrame === 0
-    ) {
+    if (this._lastFrameDrawn && this._options.playsOnce && this._currentFrame === 0) {
       this._isFinished = true;
     }
   }
@@ -71,16 +67,6 @@ export default class AnimatedSprite implements Sprite {
     const sx = column * frameWidth;
     const sy = row * frameHeight;
 
-    context.drawImage(
-      this._image,
-      sx,
-      sy,
-      frameWidth,
-      frameHeight,
-      position.x,
-      position.y,
-      frameWidth,
-      frameHeight
-    );
+    context.drawImage(this._image, sx, sy, frameWidth, frameHeight, position.x, position.y, frameWidth, frameHeight);
   }
 }

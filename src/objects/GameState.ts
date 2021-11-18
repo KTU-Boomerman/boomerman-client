@@ -1,5 +1,5 @@
 export enum GameState {
-  PlayersJoining = "PlayersJoining",
-  GameInProgress = "GameInProgress",
-  GameEnding = "GameEnding",
+  PlayersJoining = 'PlayersJoining',
+  GameInProgress = 'GameInProgress',
+  GameEnding = 'GameEnding',
 }

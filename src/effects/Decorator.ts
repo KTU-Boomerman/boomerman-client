@@ -1,4 +1,4 @@
-import { Effect } from "./Effect";
+import { Effect } from './Effect';
 
 export class Decorator implements Effect {
   protected component: Effect;

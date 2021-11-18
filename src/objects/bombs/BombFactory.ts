@@ -1,13 +1,13 @@
-import { inject, singleton } from "tsyringe";
-import Sprite from "../../sprite/Sprite";
-import SpriteFactory from "../../sprite/SpriteFactory";
-import Position from "../Position";
-import { BombType } from "../../objects/BombType";
-import BasicBomb from "./BasicBomb";
-import Bomb from "./Bomb";
-import BoomerangBomb from "./BoomerangBomb";
-import WaveBomb from "./WaveBomb";
-import PulseBomb from "./PulseBomb";
+import { inject, singleton } from 'tsyringe';
+import Sprite from '../../sprite/Sprite';
+import SpriteFactory from '../../sprite/SpriteFactory';
+import Position from '../Position';
+import { BombType } from '../../objects/BombType';
+import BasicBomb from './BasicBomb';
+import Bomb from './Bomb';
+import BoomerangBomb from './BoomerangBomb';
+import WaveBomb from './WaveBomb';
+import PulseBomb from './PulseBomb';
 
 @singleton()
 export class BombFactory {
@@ -17,10 +17,10 @@ export class BombFactory {
   boomerangSprite: Sprite;
 
   constructor(@inject(SpriteFactory) private spriteFactory: SpriteFactory) {
-    this.regularSprite = this.spriteFactory.createSprite("regularBomb");
-    this.pulseSprite = this.spriteFactory.createSprite("pulseBomb");
-    this.waveSprite = this.spriteFactory.createSprite("waveBomb");
-    this.boomerangSprite = this.spriteFactory.createSprite("boomerangBomb");
+    this.regularSprite = this.spriteFactory.createSprite('regularBomb');
+    this.pulseSprite = this.spriteFactory.createSprite('pulseBomb');
+    this.waveSprite = this.spriteFactory.createSprite('waveBomb');
+    this.boomerangSprite = this.spriteFactory.createSprite('boomerangBomb');
   }
 
   createBomb(position: Position, bombType: BombType): Bomb {

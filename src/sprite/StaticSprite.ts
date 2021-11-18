@@ -1,5 +1,5 @@
-import Position from "../objects/Position";
-import Sprite from "./Sprite";
+import Position from '../objects/Position';
+import Sprite from './Sprite';
 
 export default class StaticSprite implements Sprite {
   private _image: ImageBitmap;
@@ -12,13 +12,11 @@ export default class StaticSprite implements Sprite {
     return new StaticSprite(this._image);
   }
 
-  update(_deltaTime: number): void {}
+  update(): void {
+    // Do nothing
+  }
 
   draw(context: CanvasRenderingContext2D, position: Position): void {
-    context.drawImage(
-      this._image,
-      Math.round(position.x),
-      Math.round(position.y)
-    );
+    context.drawImage(this._image, Math.round(position.x), Math.round(position.y));
   }
 }

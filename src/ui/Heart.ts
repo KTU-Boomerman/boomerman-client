@@ -1,9 +1,9 @@
-import Renderable from "../interfaces/Renderable";
-import Position from "../objects/Position";
-import Sprite from "../sprite/Sprite";
+import Renderable from '../interfaces/Renderable';
+import Position from '../objects/Position';
+import Sprite from '../sprite/Sprite';
 
 export class Heart implements Renderable {
-  RENDER_PRIORITY: number = 100;
+  RENDER_PRIORITY = 100;
 
   constructor(private _position: Position, private _sprite: Sprite) {}
 

@@ -1,5 +1,5 @@
-import { soundManager, Sounds } from "../core/managers/SoundManager";
-import { Effect } from "./Effect";
+import { soundManager, Sounds } from '../core/managers/SoundManager';
+import { Effect } from './Effect';
 
 export class SoundEffect implements Effect {
   private _sound: Sounds;

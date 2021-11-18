@@ -1,69 +1,65 @@
-import "./style.css";
-import "toastify-js/src/toastify.css";
-import "reflect-metadata";
+import './style.css';
+import 'toastify-js/src/toastify.css';
+import 'reflect-metadata';
 
-import { Renderer } from "./core/Renderer";
-import GameManager from "./core/managers/GameManager";
-import Server from "./core/Server";
-import SpriteFactory from "./sprite/SpriteFactory";
-import { BackgroundManager } from "./core/managers/BackgroundManager";
-import { container } from "tsyringe";
-import { createKeyboardManager } from "./core/managers/KeyboardManager";
-import { IKeyboardManager } from "./core/managers/IKeyboardManager";
-import { Game } from "./core/Game";
-import { showNotification } from "./utils/notification";
-import { soundManager } from "./core/managers/SoundManager";
+import { Renderer } from './core/Renderer';
+import GameManager from './core/managers/GameManager';
+import Server from './core/Server';
+import SpriteFactory from './sprite/SpriteFactory';
+import { BackgroundManager } from './core/managers/BackgroundManager';
+import { container } from 'tsyringe';
+import { createKeyboardManager } from './core/managers/KeyboardManager';
+import { IKeyboardManager } from './core/managers/IKeyboardManager';
+import { Game } from './core/Game';
+import { showNotification } from './utils/notification';
+import { soundManager } from './core/managers/SoundManager';
 
-const backgroundCanvas = document.getElementById(
-  "background"
-) as HTMLCanvasElement;
-const gameCanvas = document.getElementById("game") as HTMLCanvasElement;
-const uiCanvas = document.getElementById("ui") as HTMLCanvasElement;
+const backgroundCanvas = document.getElementById('background') as HTMLCanvasElement;
+const gameCanvas = document.getElementById('game') as HTMLCanvasElement;
+const uiCanvas = document.getElementById('ui') as HTMLCanvasElement;
 
-container.register("BackgroundRenderer", {
+container.register('BackgroundRenderer', {
   useValue: new Renderer(backgroundCanvas),
 });
 
-container.register("GameRenderer", {
+container.register('GameRenderer', {
   useValue: new Renderer(gameCanvas),
 });
 
-container.register("UIRenderer", {
+container.register('UIRenderer', {
   useValue: new Renderer(uiCanvas, { alpha: true }),
 });
 
-container.register<IKeyboardManager>("IKeyboardManager", {
+container.register<IKeyboardManager>('IKeyboardManager', {
   useValue: createKeyboardManager(),
 });
 
-container.register<Server>("Server", {
+container.register<Server>('Server', {
   useValue: Server.getInstance(),
 });
 
 (async () => {
-  const server = container.resolve<Server>("Server");
-  const gameRenderer = container.resolve<Renderer>("GameRenderer");
+  const server = container.resolve<Server>('Server');
+  const gameRenderer = container.resolve<Renderer>('GameRenderer');
   const spriteFactory = container.resolve(SpriteFactory);
   const backgroundManager = container.resolve(BackgroundManager);
-  const keyboardManager = container.resolve<IKeyboardManager>(
-    "IKeyboardManager"
-  );
+  const keyboardManager = container.resolve<IKeyboardManager>('IKeyboardManager');
 
   await soundManager.init();
   await server.start();
   await spriteFactory.loadImages();
 
-  server.on("Notification", showNotification);
+  server.on('Notification', showNotification);
 
   const game = container.resolve(Game);
 
   backgroundManager.buildBackground();
   backgroundManager.render();
 
-  keyboardManager.on("KeyZ", game);
-  keyboardManager.on("KeyX", game);
-  keyboardManager.on("KeyC", game);
-  keyboardManager.on("KeyV", game);
+  keyboardManager.on('KeyZ', game);
+  keyboardManager.on('KeyX', game);
+  keyboardManager.on('KeyC', game);
+  keyboardManager.on('KeyV', game);
 
   await new GameManager(game, gameRenderer).start();
 })();

@@ -1,19 +1,19 @@
-import { MockProxy, mock } from "jest-mock-extended";
-import { Game } from "../core/Game";
-import { IKeyboardManager, Key } from "../core/managers/IKeyboardManager";
-import Sprite from "../sprite/Sprite";
-import Player from "./Player";
-import Position from "./Position";
+import { MockProxy, mock } from 'jest-mock-extended';
+import { Game } from '../core/Game';
+import { IKeyboardManager, Key } from '../core/managers/IKeyboardManager';
+import Sprite from '../sprite/Sprite';
+import Player from './Player';
+import Position from './Position';
 
-const TEST_PLAYER_ID: Readonly<string> = "test-player-id";
+const TEST_PLAYER_ID: Readonly<string> = 'test-player-id';
 const keyDirection = (...keys: Key[]): [number, number] => {
   let x = 0;
   let y = 0;
 
-  if (keys.includes("ArrowUp")) y--;
-  if (keys.includes("ArrowDown")) y++;
-  if (keys.includes("ArrowRight")) x++;
-  if (keys.includes("ArrowLeft")) x--;
+  if (keys.includes('ArrowUp')) y--;
+  if (keys.includes('ArrowDown')) y++;
+  if (keys.includes('ArrowRight')) x++;
+  if (keys.includes('ArrowLeft')) x--;
 
   if (x != 0 && y != 0) {
     x *= Math.sqrt(0.5);
@@ -23,7 +23,7 @@ const keyDirection = (...keys: Key[]): [number, number] => {
   return [x, y];
 };
 
-describe("Player", () => {
+describe('Player', () => {
   let player: Player;
   let keyboardManager: MockProxy<IKeyboardManager>;
   let canvasContext: MockProxy<CanvasRenderingContext2D>;
@@ -39,72 +39,66 @@ describe("Player", () => {
     player.position = initialPosition.clone();
 
     game = mock<Game>();
-    game.onPlayerPositionUpdate.mockImplementation(
-      async (_position, newPosition) => {
-        player.position = new Position(newPosition);
-      }
-    );
+    game.onPlayerPositionUpdate.mockImplementation(async (_position, newPosition) => {
+      player.position = new Position(newPosition);
+    });
   });
 
-  it("should convert to dto", () => {
+  it('should convert to dto', () => {
     player.id = TEST_PLAYER_ID;
     const dto = player.toDTO();
     expect(dto.id).toBe(TEST_PLAYER_ID);
     expect(dto.position).toEqual(initialPosition.toDTO());
   });
 
-  it("should have set id", () => {
+  it('should have set id', () => {
     player.id = TEST_PLAYER_ID;
     expect(player.id).toEqual(TEST_PLAYER_ID);
   });
 
-  it("should not move without initial position", () => {
-    player["_position"] = (null as unknown) as Position;
-    keyboardManager.isPressed.calledWith("ArrowUp").mockReturnValue(true);
+  it('should not move without initial position', () => {
+    player['_position'] = null as unknown as Position;
+    keyboardManager.isPressed.calledWith('ArrowUp').mockReturnValue(true);
 
     player.update(100);
 
     expect(player.position).toBe(null);
   });
 
-  it("should not render without initial position ", () => {
-    player["_position"] = (null as unknown) as Position;
+  it('should not render without initial position ', () => {
+    player['_position'] = null as unknown as Position;
     player.render(canvasContext);
-    expect(player["sprite"].draw).not.toBeCalled();
+    expect(player['sprite'].draw).not.toBeCalled();
   });
 
-  it("should render", () => {
+  it('should render', () => {
     player.render(canvasContext);
-    expect(player["sprite"].draw).toBeCalled();
+    expect(player['sprite'].draw).toBeCalled();
   });
 
-  it("should move in all directions", () => {
+  it('should move in all directions', () => {
     const directions: Key[][] = [
       [],
-      ["ArrowUp"],
-      ["ArrowDown"],
-      ["ArrowRight"],
-      ["ArrowLeft"],
-      ["ArrowUp", "ArrowRight"],
-      ["ArrowUp", "ArrowLeft"],
-      ["ArrowDown", "ArrowRight"],
-      ["ArrowDown", "ArrowLeft"],
+      ['ArrowUp'],
+      ['ArrowDown'],
+      ['ArrowRight'],
+      ['ArrowLeft'],
+      ['ArrowUp', 'ArrowRight'],
+      ['ArrowUp', 'ArrowLeft'],
+      ['ArrowDown', 'ArrowRight'],
+      ['ArrowDown', 'ArrowLeft'],
     ];
 
     directions.forEach((keys) => {
       testMove(player, keyboardManager, ...keys);
     });
 
-    testMove(player, keyboardManager, "ArrowUp");
+    testMove(player, keyboardManager, 'ArrowUp');
   });
 
-  function testMove(
-    player: Player,
-    _keyboardManager: MockProxy<IKeyboardManager>,
-    ...keys: Key[]
-  ) {
+  function testMove(player: Player, _keyboardManager: MockProxy<IKeyboardManager>, ...keys: Key[]) {
     const DELTA_TIME = 100;
-    const PLAYER_SPEED = player["_speed"];
+    const PLAYER_SPEED = player['_speed'];
 
     keyboardManager.isPressed.mockReset();
     keys.forEach((key) => {

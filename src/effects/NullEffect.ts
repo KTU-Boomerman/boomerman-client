@@ -1,5 +1,7 @@
-import { Effect } from "./Effect";
+import { Effect } from './Effect';
 
 export class NullEffect implements Effect {
-  play(): void {}
+  play(): void {
+    // Do nothing
+  }
 }

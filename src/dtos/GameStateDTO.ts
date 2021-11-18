@@ -1,4 +1,4 @@
-import { GameState } from "../objects/GameState";
+import { GameState } from '../objects/GameState';
 
 export interface GameStateDTO {
   gameState: GameState;

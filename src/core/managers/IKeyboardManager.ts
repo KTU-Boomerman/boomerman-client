@@ -1,17 +1,8 @@
-export const USED_KEYS = [
-  "ArrowUp",
-  "ArrowLeft",
-  "ArrowDown",
-  "ArrowRight",
-  "KeyZ",
-  "KeyX",
-  "KeyC",
-  "KeyV",
-] as const;
+export const USED_KEYS = ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'KeyZ', 'KeyX', 'KeyC', 'KeyV'] as const;
 
 export type Key = typeof USED_KEYS[number];
 
-export type KeyState = "pressed" | "released";
+export type KeyState = 'pressed' | 'released';
 
 export interface IKeyboardListener {
   onKey: (key: Key, state: KeyState) => void;

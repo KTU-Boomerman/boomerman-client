@@ -1,6 +1,6 @@
-import { Decorator } from "./Decorator";
-import { Effect } from "./Effect";
-import { Renderer } from "../core/Renderer";
+import { Decorator } from './Decorator';
+import { Effect } from './Effect';
+import { Renderer } from '../core/Renderer';
 
 export class GrayscaleDecorator extends Decorator {
   constructor(component: Effect, private renderers: Renderer[]) {
