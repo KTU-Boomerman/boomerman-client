@@ -7,13 +7,15 @@
     "serve": "vite preview",
     "test": "jest src",
     "coverage": "jest src --coverage",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "lint-report": "eslint '*/**/*.{js,ts,tsx}' --quiet -f node_modules/eslint-html-reporter/reporter.js -o report.html"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",
     "@types/stats.js": "^0.17.0",
     "@types/toastify-js": "^1.9.2",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-html-reporter": "^0.7.4",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.3.1",
     "jest-mock-extended": "^2.0.4",
