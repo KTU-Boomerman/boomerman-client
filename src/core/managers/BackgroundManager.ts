@@ -8,13 +8,15 @@ import { Renderer } from '../Renderer';
 import { IBackgroundManager } from './IBackgroundManager';
 
 @injectable()
-export class BackgroundManager implements IBackgroundManager {
+export class BackgroundManager extends GameObject implements IBackgroundManager {
   private map: GameObject[][] = [];
 
   constructor(
     @inject(SpriteFactory) private spriteFactory: SpriteFactory,
     @inject('BackgroundRenderer') private renderer: Renderer,
-  ) {}
+  ) {
+    super();
+  }
 
   buildBackground(map: string[][] = defaultMap) {
     this.renderer.removeAll();
@@ -46,7 +48,7 @@ export class BackgroundManager implements IBackgroundManager {
     }
   }
 
-  render() {
+  start() {
     this.renderer.render();
   }
 }
