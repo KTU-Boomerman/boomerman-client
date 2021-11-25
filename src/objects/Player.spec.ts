@@ -34,7 +34,7 @@ describe('Player', () => {
     const sprite = mock<Sprite>();
     keyboardManager = mock<IKeyboardManager>();
     canvasContext = mock<CanvasRenderingContext2D>();
-    player = new Player(sprite, initialPosition, game);
+    player = new Player(sprite, sprite, initialPosition, game);
     player.keyboardManager = keyboardManager;
     player.position = initialPosition.clone();
 
