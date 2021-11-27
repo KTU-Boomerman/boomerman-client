@@ -13,12 +13,48 @@ body {
   overflow: hidden;
 }
 
+.game {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#chat {
+  border: 1px solid black;
+  width: 250px;
+  height: 832px;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.message {
+  border-bottom: 1px solid grey;
+}
+
+.message-user {
+  background-color: lightgrey;
+}
+
+.message .player {
+  background-color: aqua;
+  font-weight: bold;
+}
+
 #stage {
   width: 1088px;
   height: 832px;
   position: relative;
   border: 1px solid black;
   box-sizing: border-box;
+  margin-right: 10px;
 }
 
 #ui {
