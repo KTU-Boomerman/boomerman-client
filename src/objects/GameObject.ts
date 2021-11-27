@@ -16,4 +16,14 @@ export default class GameObject implements Renderable, Updatable, Startable {
   public update(_deltaTime: number): void {
     // Do nothing
   }
+
+  // Safety - maximising component interface
+  // currently using transparensy - defining only meaningful methods
+  // public add(entity: GameObject): void {
+  //   // Do nothing
+  // }
+
+  // public remove(entity: GameObject): void {
+  //   // Do nothing
+  // }
 }

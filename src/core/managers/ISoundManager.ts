@@ -7,7 +7,7 @@ export type Sounds = keyof typeof soundFiles;
 export const sounds = Object.keys(soundFiles) as Sounds[];
 
 export interface ISoundManager {
-  init(): void;
+  init(): Promise<void>;
   playSound(sound: Sounds): void;
   setVolume(volume: number): void;
 }

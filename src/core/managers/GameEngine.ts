@@ -1,5 +1,5 @@
 import Stats from 'stats.js';
-import Game from '../AbstractGame';
+import GameObject from '../../objects/GameObject';
 import { Renderer } from '../Renderer';
 
 // TODO: add only in development mode
@@ -7,14 +7,14 @@ const stats = new Stats();
 stats.showPanel(0);
 document.body.appendChild(stats.dom);
 
-export default class GameManager {
+export default class GameEngine {
   private last = 0;
   private deltaTime = 0;
-  private game: Game;
+  private game: GameObject;
   private renderer: Renderer;
   private isLoading = true;
 
-  constructor(game: Game, renderer: Renderer) {
+  constructor(game: GameObject, renderer: Renderer) {
     this.game = game;
     this.renderer = renderer;
   }

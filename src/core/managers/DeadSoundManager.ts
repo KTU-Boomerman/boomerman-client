@@ -4,9 +4,7 @@ import { SoundManager } from './SoundManager';
 
 @singleton()
 export class DeadSoundManager implements ISoundManager {
-  private soundManager: ISoundManager;
-  constructor(@inject(SoundManager) soundManager: ISoundManager) {
-    this.soundManager = soundManager;
+  constructor(@inject(SoundManager) private soundManager: ISoundManager) {
     this.soundManager.setVolume(0.01);
   }
 

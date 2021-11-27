@@ -6,11 +6,12 @@ import { Heart } from '../../ui/Heart';
 import { Score } from '../../ui/Score';
 import { Renderer } from '../Renderer';
 import { BombCount } from '../../ui/BombCount';
+import GameObject from '../../objects/GameObject';
 
 export type Lives = 0 | 1 | 2 | 3;
 
 @singleton()
-export class UIManager {
+export class UIManager extends GameObject {
   private hearts: [Heart, Heart, Heart];
   private score: Score;
   private bombCount: BombCount;
@@ -22,6 +23,7 @@ export class UIManager {
     @inject(SpriteFactory) private spriteFactory: SpriteFactory,
     @inject('UIRenderer') private renderer: Renderer,
   ) {
+    super();
     this.heartSprite = this.spriteFactory.createSprite('heart');
     this.heartGreySprite = this.spriteFactory.createSprite('heartGrey');
 
@@ -63,5 +65,9 @@ export class UIManager {
 
   render() {
     this.renderer.render();
+  }
+
+  start() {
+    this.render();
   }
 }
