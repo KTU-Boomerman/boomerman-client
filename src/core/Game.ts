@@ -23,11 +23,13 @@ import AnimatedSprite from '../sprite/AnimatedSprite';
 import Powerup from '../objects/powerups/Powerup';
 import { PowerupFactory } from '../objects/powerups/PowerupFactory';
 import { Effect } from '../effects/Effect';
-import { Sounds } from './managers/SoundManager';
 import { SoundEffect } from '../effects/SoundEffect';
 import { NullEffect } from '../effects/NullEffect';
 import { GrayscaleDecorator } from '../effects/GrayscaleDecorator';
 import { ShakeDecorator } from '../effects/ShakeDecorator';
+import { ISoundManager, Sounds } from './managers/ISoundManager';
+import {DeadSoundManager} from './managers/DeadSoundManager';
+import {SoundManager} from './managers/SoundManager';
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -44,8 +46,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
   enemySprite: Sprite;
   enemyDyingSprite: Sprite;
   explosionSprite: AnimatedSprite;
-
   deathEffect: Effect;
+  currentSoundManager: ISoundManager;
 
   constructor(
     @inject('IKeyboardManager') private keyboardManager: IKeyboardManager,
@@ -56,6 +58,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
     @inject(BombFactory) public bombFactory: BombFactory,
     @inject(PowerupFactory) public powerupFactory: PowerupFactory,
     @inject(UIManager) private uiManager: UIManager,
+    @inject(SoundManager) private soundManager: SoundManager,
+    @inject(DeadSoundManager) private deadSoundManager: DeadSoundManager,
   ) {
     super();
 
@@ -76,6 +80,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     this.player.keyboardManager = this.keyboardManager;
 
     this.uiManager.render();
+    this.currentSoundManager = this.soundManager;
 
     this.deathEffect = this.createEffect({
       sound: 'death',
@@ -292,8 +297,10 @@ export class Game extends AbstractGame implements IKeyboardListener {
     visual?: 'grayscale';
     animation?: 'shake';
   }): Effect {
-    let effect = sound ? new SoundEffect(sound) : new NullEffect();
+    if (this.player.isDead())
+      this.currentSoundManager = this.deadSoundManager;
 
+    let effect = sound ? new SoundEffect(sound, this.currentSoundManager) : new NullEffect();
     if (visual === 'grayscale') {
       effect = new GrayscaleDecorator(effect, [this.gameRenderer, this.backgroundRenderer]);
     }
