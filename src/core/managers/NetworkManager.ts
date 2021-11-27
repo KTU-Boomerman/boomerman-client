@@ -9,6 +9,7 @@ import { AudioManager } from './AudioManager';
 import { EffectManager } from './EffectManager';
 import { EntityManager } from './EntityManager';
 import { UIManager } from './UIManager';
+import { ChatManager } from './ChatManager';
 
 @singleton()
 export class NetworkManager extends GameObject {
@@ -20,6 +21,7 @@ export class NetworkManager extends GameObject {
     @inject(UIManager) private uiManager: UIManager,
     @inject(EntityManager) private entityManager: EntityManager,
     @inject(AudioManager) private audioManager: AudioManager,
+    @inject(ChatManager) private chatManager: ChatManager,
   ) {
     super();
   }
@@ -142,6 +144,18 @@ export class NetworkManager extends GameObject {
     this.server.on('RemovePowerup', (positionDto) => {
       const position = new Position(positionDto);
       this.entityManager.removePowerupByPosition(position);
+    });
+
+    this.server.on('SendMessage', (playerId, playerName, message) => {
+      const player = this.entityManager.getPlayerById(playerId);
+      if (!player) return;
+
+      const name = playerName || playerId;
+
+      this.chatManager.onMessage({
+        name: playerName,
+        message,
+      });
     });
   }
 }

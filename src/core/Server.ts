@@ -12,6 +12,7 @@ type InvokeEventMap = {
   PlayerJoin: () => void;
   PlayerMove: (originalPosition: PositionDTO, newPosition: PositionDTO) => PositionDTO;
   PlaceBomb: (bomb: CreateBombDTO) => void;
+  SendMessage: (message: string) => void;
 };
 
 type OnEventMap = {
@@ -28,6 +29,7 @@ type OnEventMap = {
   UpdateBombCount: (playerId: string, score: number) => void;
   PlacePowerup: (powerup: PowerupDTO) => void;
   RemovePowerup: (position: PositionDTO) => void;
+  SendMessage: (playerId: string, playerName: string, message: string) => void;
 };
 
 export default class Server {
