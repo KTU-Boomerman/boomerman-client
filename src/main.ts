@@ -12,11 +12,12 @@ import { createKeyboardManager } from './core/managers/KeyboardManager';
 import { IKeyboardManager } from './core/managers/IKeyboardManager';
 import { Game } from './core/Game';
 import { showNotification } from './utils/notification';
-import { soundManager } from './core/managers/SoundManager';
+import { SoundManager } from './core/managers/SoundManager';
 
 const backgroundCanvas = document.getElementById('background') as HTMLCanvasElement;
 const gameCanvas = document.getElementById('game') as HTMLCanvasElement;
 const uiCanvas = document.getElementById('ui') as HTMLCanvasElement;
+const soundManager = new SoundManager();
 
 container.register('BackgroundRenderer', {
   useValue: new Renderer(backgroundCanvas),

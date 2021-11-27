@@ -1,5 +1,5 @@
-import { singleton } from "tsyringe";
-import {ISoundManager, soundFiles, sounds, Sounds} from "./ISoundManager";
+import { singleton } from 'tsyringe';
+import { ISoundManager, soundFiles, sounds, Sounds } from './ISoundManager';
 
 @singleton()
 export class SoundManager implements ISoundManager {
@@ -23,7 +23,7 @@ export class SoundManager implements ISoundManager {
   public async init() {
     for (const sound of sounds) {
       const url = soundFiles[sound];
-      this.loadSound(sound as Sounds, url);
+      await this.loadSound(sound as Sounds, url);
     }
   }
 

@@ -28,8 +28,8 @@ import { NullEffect } from '../effects/NullEffect';
 import { GrayscaleDecorator } from '../effects/GrayscaleDecorator';
 import { ShakeDecorator } from '../effects/ShakeDecorator';
 import { ISoundManager, Sounds } from './managers/ISoundManager';
-import {DeadSoundManager} from './managers/DeadSoundManager';
-import {SoundManager} from './managers/SoundManager';
+import { DeadSoundManager } from './managers/DeadSoundManager';
+import { SoundManager } from './managers/SoundManager';
 
 @singleton()
 export class Game extends AbstractGame implements IKeyboardListener {
@@ -91,6 +91,8 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
   async start(): Promise<void> {
     this.mapEvents();
+    await this.soundManager.init();
+    await this.deadSoundManager.init();
   }
 
   update(deltaTime: number): void {
@@ -153,6 +155,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
 
     this.server.on('PlayerPlaceBomb', (bombDto) => {
       const position = new Position(bombDto.position);
+      this.deathEffect.play();
       const bomb = this.bombFactory.createBomb(position, bombDto.bombType);
 
       this.bombs.push(bomb);
@@ -297,8 +300,7 @@ export class Game extends AbstractGame implements IKeyboardListener {
     visual?: 'grayscale';
     animation?: 'shake';
   }): Effect {
-    if (this.player.isDead())
-      this.currentSoundManager = this.deadSoundManager;
+    if (this.player.isDead() || true) this.currentSoundManager = this.deadSoundManager;
 
     let effect = sound ? new SoundEffect(sound, this.currentSoundManager) : new NullEffect();
     if (visual === 'grayscale') {

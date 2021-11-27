@@ -31,7 +31,7 @@ export default class Player extends GameObject implements DataTransferable<Playe
   isDead() {
     return this._lives <= 0;
   }
-   
+
   render(context: CanvasRenderingContext2D): void {
     if (this._position == null) return;
     if (this._lives == 0) return;
