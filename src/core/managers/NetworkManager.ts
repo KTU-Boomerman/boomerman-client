@@ -5,6 +5,7 @@ import GameObject from '../../objects/GameObject';
 import Position from '../../objects/Position';
 import { PowerupFactory } from '../../objects/powerups/PowerupFactory';
 import Server from '../Server';
+import { AudioManager } from './AudioManager';
 import { EffectManager } from './EffectManager';
 import { EntityManager } from './EntityManager';
 import { UIManager } from './UIManager';
@@ -18,6 +19,7 @@ export class NetworkManager extends GameObject {
     @inject(EffectManager) private effectManager: EffectManager,
     @inject(UIManager) private uiManager: UIManager,
     @inject(EntityManager) private entityManager: EntityManager,
+    @inject(AudioManager) private audioManager: AudioManager,
   ) {
     super();
   }
@@ -114,7 +116,7 @@ export class NetworkManager extends GameObject {
 
       if (lives > 0) return;
 
-      const deathEffect = this.effectManager.createEffect({
+      const deathEffect = this.effectManager.createEffect(this.audioManager.getSoundManager(), {
         sound: 'death',
         visual: 'grayscale',
         animation: 'shake',

@@ -7,7 +7,7 @@
     "serve": "vite preview",
     "test": "jest src",
     "coverage": "jest src --coverage",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "lint": "eslint */**/*.{js,ts,tsx} --quiet --fix",
     "lint-report": "eslint '*/**/*.{js,ts,tsx}' --quiet -f node_modules/eslint-html-reporter/reporter.js -o report.html",
     "format": "prettier '*/**/*.{js,ts,tsx}' --write"
   },

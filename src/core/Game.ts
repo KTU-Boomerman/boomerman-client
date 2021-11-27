@@ -20,6 +20,7 @@ import { EntityManager } from './managers/EntityManager';
 import GameObject from '../objects/GameObject';
 import { BackgroundManager } from './managers/BackgroundManager';
 import { NetworkManager } from './managers/NetworkManager';
+import { AudioManager } from './managers/AudioManager';
 
 @singleton()
 export class Game extends GameObject implements IKeyboardListener {
@@ -42,6 +43,7 @@ export class Game extends GameObject implements IKeyboardListener {
     @inject(EntityManager) private entityManager: EntityManager,
     @inject(BackgroundManager) private backgroundManager: BackgroundManager,
     @inject(NetworkManager) private networkManager: NetworkManager,
+    @inject(AudioManager) private audioManager: AudioManager,
   ) {
     super();
 
@@ -66,6 +68,7 @@ export class Game extends GameObject implements IKeyboardListener {
     this.networkManager.start();
     this.uiManager.start();
     this.backgroundManager.start();
+    await this.audioManager.init();
   }
 
   update(deltaTime: number): void {

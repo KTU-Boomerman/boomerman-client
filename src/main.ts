@@ -11,7 +11,6 @@ import { createKeyboardManager } from './core/managers/KeyboardManager';
 import { IKeyboardManager } from './core/managers/IKeyboardManager';
 import { Game } from './core/Game';
 import { showNotification } from './utils/notification';
-import { soundManager } from './core/managers/SoundManager';
 import { EntityManager } from './core/managers/EntityManager';
 
 const backgroundCanvas = document.getElementById('background') as HTMLCanvasElement;
@@ -44,7 +43,6 @@ container.register<Server>('Server', {
   const spriteFactory = container.resolve(SpriteFactory);
   const keyboardManager = container.resolve<IKeyboardManager>('IKeyboardManager');
 
-  await soundManager.init();
   await server.start();
   await spriteFactory.loadImages();
 

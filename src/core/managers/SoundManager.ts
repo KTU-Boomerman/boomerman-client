@@ -1,13 +1,9 @@
-const soundFiles = {
-  death: '../../../assets/sounds/death.mp3',
-} as const;
+import { singleton } from 'tsyringe';
+import { ISoundManager, soundFiles, sounds, Sounds } from './ISoundManager';
 
-export type Sounds = keyof typeof soundFiles;
-
-const sounds = Object.keys(soundFiles) as Sounds[];
-
-class SoundManager {
-  public static readonly SOUND_VOLUME = 0.05;
+@singleton()
+export class SoundManager implements ISoundManager {
+  public static readonly DEFAULT_VALUE = 0.05;
 
   private audioContext: AudioContext;
   private audioBuffers: Map<Sounds, AudioBuffer> = new Map();
@@ -20,15 +16,19 @@ class SoundManager {
 
   private createGainNode() {
     const gainNode = this.audioContext.createGain();
-    gainNode.gain.value = SoundManager.SOUND_VOLUME;
+    gainNode.gain.value = SoundManager.DEFAULT_VALUE;
     return gainNode;
   }
 
   public async init() {
     for (const sound of sounds) {
       const url = soundFiles[sound];
-      this.loadSound(sound as Sounds, url);
+      await this.loadSound(sound as Sounds, url);
     }
+  }
+
+  public setVolume(volume: number) {
+    this.gainNode.gain.value = volume;
   }
 
   private async loadSound(sound: Sounds, url: string) {
@@ -52,5 +52,3 @@ class SoundManager {
     source.start();
   }
 }
-
-export const soundManager = new SoundManager();
