@@ -5,7 +5,5 @@ module.exports = {
     sourceType: 'module',
   },
   extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
-  rules: {
-    'no-console': 'warn',
-  },
+  rules: {},
 };
