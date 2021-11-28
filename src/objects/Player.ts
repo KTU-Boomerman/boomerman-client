@@ -6,6 +6,7 @@ import { PlayerDTO } from '../dtos/PlayerDTO';
 import { IKeyboardManager } from '../core/managers/IKeyboardManager';
 import { Game } from '../core/Game';
 import { Lives } from '../core/managers/UIManager';
+import { PlayerColor } from './PlayerColor';
 
 export default class Player extends GameObject implements DataTransferable<PlayerDTO> {
   RENDER_PRIORITY = 10;
@@ -16,6 +17,7 @@ export default class Player extends GameObject implements DataTransferable<Playe
   private _keyboardManager?: IKeyboardManager;
   private _lives: Lives = 3;
   private _dyingTime = 0;
+  private _color: PlayerColor | null = null;
 
   constructor(private sprite: Sprite, private spriteDying: Sprite, position: Position, private game: Game) {
     super();
@@ -38,7 +40,9 @@ export default class Player extends GameObject implements DataTransferable<Playe
 
     const sprite = this._dyingTime > 0 ? this.spriteDying : this.sprite;
 
-    sprite.draw(context, this._position);
+    console.log(this._color);
+
+    sprite.draw(context, this._position, { color: this._color });
   }
 
   set lives(lives: Lives) {
@@ -67,6 +71,10 @@ export default class Player extends GameObject implements DataTransferable<Playe
 
   set keyboardManager(keyboardManager: IKeyboardManager) {
     this._keyboardManager = keyboardManager;
+  }
+
+  set color(color: PlayerColor) {
+    this._color = color;
   }
 
   toDTO() {

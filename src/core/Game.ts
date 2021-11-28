@@ -102,6 +102,7 @@ export class Game extends GameObject implements IKeyboardListener {
 
   onKey(key: Key, state: KeyState): void {
     if (state == 'pressed') {
+      console.log(key);
       switch (key) {
         case 'KeyZ':
           this.addBomb();
@@ -114,6 +115,10 @@ export class Game extends GameObject implements IKeyboardListener {
           break;
         case 'KeyV':
           this.addBomb(BombType.Pulse);
+          break;
+        case 'KeyB':
+          console.log('Change color nx');
+          this.server.invoke('ChangePlayerColor');
           break;
         default:
           break;

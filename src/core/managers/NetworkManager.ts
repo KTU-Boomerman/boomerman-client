@@ -153,9 +153,16 @@ export class NetworkManager extends GameObject {
       const name = playerName || playerId;
 
       this.chatManager.onMessage({
-        name: playerName,
+        name,
         message,
       });
+    });
+
+    this.server.on('PlayerChangeColor', (playerId, { color }) => {
+      const player = this.entityManager.getPlayerById(playerId);
+      if (!player) return;
+
+      player.color = color;
     });
   }
 }

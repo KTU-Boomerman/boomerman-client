@@ -3,12 +3,14 @@ import GameObject from './GameObject';
 import Sprite from '../sprite/Sprite';
 import { PlayerDTO } from '../dtos/PlayerDTO';
 import { Lives } from '../core/managers/UIManager';
+import { PlayerColor } from './PlayerColor';
 
 export default class Enemy extends GameObject {
   private _id = '';
   private _position: Position;
   private _lives: Lives = 3;
   private _dyingTime = 0;
+  private _color: PlayerColor | null = null;
 
   constructor(private sprite: Sprite, private spriteDying: Sprite, playerDto: PlayerDTO) {
     super();
@@ -31,6 +33,10 @@ export default class Enemy extends GameObject {
     this._lives = lives;
   }
 
+  set color(color: PlayerColor) {
+    this._color = color;
+  }
+
   update(deltaTime: number) {
     if (this._lives == 0) return;
     this.updateDyingTimer(deltaTime);
@@ -47,6 +53,6 @@ export default class Enemy extends GameObject {
 
     const sprite = this._dyingTime > 0 ? this.spriteDying : this.sprite;
 
-    sprite.draw(context, this._position);
+    sprite.draw(context, this._position, { color: this._color });
   }
 }

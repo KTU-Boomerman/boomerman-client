@@ -1,4 +1,14 @@
-export const USED_KEYS = ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'KeyZ', 'KeyX', 'KeyC', 'KeyV'] as const;
+export const USED_KEYS = [
+  'ArrowUp',
+  'ArrowLeft',
+  'ArrowDown',
+  'ArrowRight',
+  'KeyZ',
+  'KeyX',
+  'KeyC',
+  'KeyV',
+  'KeyB',
+] as const;
 
 export type Key = typeof USED_KEYS[number];
 
