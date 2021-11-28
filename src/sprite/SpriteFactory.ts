@@ -120,6 +120,7 @@ export const sprites: Record<SpriteKey, SpriteData> = {
 @singleton()
 export default class SpriteFactory {
   private _images = new Map<string, ImageBitmap>();
+  private _sprites: {[key: string]: Sprite} = {};
 
   createSprite(spriteKey: SpriteKey): Sprite {
     const image = this._images.get(spriteKey);
@@ -128,14 +129,18 @@ export default class SpriteFactory {
       throw new Error(`Image not found for key: ${spriteKey}`);
     }
 
-    const { isAnimated } = sprites[spriteKey];
+    if (!(spriteKey in this._sprites)) {
+      const { isAnimated } = sprites[spriteKey];
 
-    if (isAnimated) {
-      const data = sprites[spriteKey] as AnimatedSpriteData;
-      return new AnimatedSprite(image, data);
+      if (isAnimated) {
+        const data = sprites[spriteKey] as AnimatedSpriteData;
+        this._sprites[spriteKey] = new AnimatedSprite(image, data);
+      } else {
+        this._sprites[spriteKey] = new StaticSprite(image);
+      }
     }
 
-    return new StaticSprite(image);
+    return this._sprites[spriteKey];
   }
 
   async loadImages(): Promise<void> {
