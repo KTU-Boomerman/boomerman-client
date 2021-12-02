@@ -120,7 +120,7 @@ export const sprites: Record<SpriteKey, SpriteData> = {
 @singleton()
 export default class SpriteFactory {
   private _images = new Map<string, ImageBitmap>();
-  private _sprites: {[key: string]: Sprite} = {};
+  private _sprites: { [key: string]: Sprite } = {};
 
   createSprite(spriteKey: SpriteKey): Sprite {
     const image = this._images.get(spriteKey);

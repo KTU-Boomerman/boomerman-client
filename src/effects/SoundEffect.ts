@@ -13,4 +13,8 @@ export class SoundEffect implements Effect {
   play(): void {
     this._soundManager.playSound(this._sound);
   }
+
+  stop(): void {
+    // Do nothing
+  }
 }

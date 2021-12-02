@@ -8,11 +8,21 @@ import Server from '../Server';
 import { AudioManager } from './AudioManager';
 import { EffectManager } from './EffectManager';
 import { EntityManager } from './EntityManager';
-import { UIManager } from './UIManager';
+import { Lives, UIManager } from './UIManager';
 import { ChatManager } from './ChatManager';
+import { Effect } from '../../effects/Effect';
 
 @singleton()
 export class NetworkManager extends GameObject {
+  private _aliveEffect: Effect;
+  private _injuredEffect: Effect;
+  private _heavyInjuryEffect: Effect;
+  private _deathEffect: Effect;
+
+  private _effects: Record<Lives, Effect>;
+
+  private _currentEffect: Effect;
+
   constructor(
     @inject('Server') private server: Server,
     @inject(BombFactory) private bombFactory: BombFactory,
@@ -24,6 +34,31 @@ export class NetworkManager extends GameObject {
     @inject(ChatManager) private chatManager: ChatManager,
   ) {
     super();
+
+    this._aliveEffect = this.effectManager.createEffect();
+
+    this._injuredEffect = this.effectManager.createEffect({
+      visual: ['grayscale', 33],
+    });
+
+    this._heavyInjuryEffect = this.effectManager.createEffect({
+      visual: ['grayscale', 66],
+    });
+
+    this._deathEffect = this.effectManager.createEffect({
+      sound: 'death',
+      visual: ['grayscale', 100],
+      animation: 'shake',
+    });
+
+    this._effects = {
+      3: this._aliveEffect,
+      2: this._injuredEffect,
+      1: this._heavyInjuryEffect,
+      0: this._deathEffect,
+    };
+
+    this._currentEffect = this._aliveEffect;
   }
 
   private loadEnemies(players: PlayerDTO[]) {
@@ -116,14 +151,16 @@ export class NetworkManager extends GameObject {
 
       this.uiManager.updateLives(lives);
 
+      const newEffect = this._effects[lives];
+      if (this._currentEffect !== newEffect) {
+        this._currentEffect.stop();
+        this._currentEffect = newEffect;
+        this._currentEffect.play();
+      }
+
       if (lives > 0) return;
 
-      const deathEffect = this.effectManager.createEffect(this.audioManager.getSoundManager(), {
-        sound: 'death',
-        visual: 'grayscale',
-        animation: 'shake',
-      });
-      deathEffect.play();
+      if (player && player.isDead()) this.audioManager.setSoundManager('dead');
     });
 
     this.server.on('UpdateScore', (playerId, score) => {
