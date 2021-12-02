@@ -7,12 +7,14 @@ import { PositionDTO } from '../dtos/PositionDTO';
 import { MapDTO } from '../dtos/MapDTO';
 import { Lives } from './managers/UIManager';
 import { PowerupDTO } from '../dtos/PowerupDTO';
+import { PlayerColorDTO } from '../dtos/PlayerColorDTO';
 
 type InvokeEventMap = {
   PlayerJoin: () => void;
   PlayerMove: (originalPosition: PositionDTO, newPosition: PositionDTO) => PositionDTO;
   PlaceBomb: (bomb: CreateBombDTO) => void;
   SendMessage: (message: string) => void;
+  ChangePlayerColor: () => void;
 };
 
 type OnEventMap = {
@@ -30,6 +32,7 @@ type OnEventMap = {
   PlacePowerup: (powerup: PowerupDTO) => void;
   RemovePowerup: (position: PositionDTO) => void;
   SendMessage: (playerId: string, playerName: string, message: string) => void;
+  PlayerChangeColor: (playerId: string, playerColorDto: PlayerColorDTO) => void;
 };
 
 export default class Server {

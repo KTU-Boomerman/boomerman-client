@@ -115,6 +115,9 @@ export class Game extends GameObject implements IKeyboardListener {
         case 'KeyV':
           this.addBomb(BombType.Pulse);
           break;
+        case 'KeyB':
+          this.server.invoke('ChangePlayerColor');
+          break;
         default:
           break;
       }
