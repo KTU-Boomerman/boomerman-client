@@ -10,4 +10,9 @@ export class ShakeDecorator extends Decorator {
     super.play();
     document.getElementById('stage')?.classList.add('shake');
   }
+
+  public stop() {
+    super.stop();
+    document.getElementById('stage')?.classList.remove('shake');
+  }
 }

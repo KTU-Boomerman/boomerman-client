@@ -10,4 +10,8 @@ export class Decorator implements Effect {
   public play() {
     this.component.play();
   }
+
+  public stop() {
+    this.component.stop();
+  }
 }
