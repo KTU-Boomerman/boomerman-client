@@ -40,8 +40,6 @@ export default class Player extends GameObject implements DataTransferable<Playe
 
     const sprite = this._dyingTime > 0 ? this.spriteDying : this.sprite;
 
-    console.log(this._color);
-
     sprite.draw(context, this._position, { color: this._color });
   }
 

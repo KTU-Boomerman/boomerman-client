@@ -29,7 +29,6 @@ export class KeyboardManager implements IKeyboardManager {
     if (!this.isUsedKey(key)) {
       return;
     }
-    console.warn(`Key "${key}" is used.`);
 
     if (state === 'pressed') {
       this.pressedKeys.add(key);
