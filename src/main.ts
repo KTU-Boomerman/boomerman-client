@@ -54,6 +54,7 @@ container.register<Server>('Server', {
   keyboardManager.on('KeyC', game);
   keyboardManager.on('KeyV', game);
   keyboardManager.on('KeyB', game);
+  keyboardManager.on('KeyA', game);
 
   const entityManager = container.resolve(EntityManager);
   gameRenderer.add(entityManager);
