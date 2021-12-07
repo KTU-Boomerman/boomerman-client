@@ -79,6 +79,8 @@ export default class Player extends GameObject implements DataTransferable<Playe
     return {
       id: this._id,
       position: this._position.toDTO(),
+      color: this._color,
+      lives: this._lives,
     };
   }
 

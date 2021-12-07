@@ -15,6 +15,7 @@ type InvokeEventMap = {
   PlaceBomb: (bomb: CreateBombDTO) => void;
   SendMessage: (message: string) => void;
   ChangePlayerColor: () => void;
+  PlayerUnwind: () => void;
 };
 
 type OnEventMap = {
@@ -33,6 +34,7 @@ type OnEventMap = {
   RemovePowerup: (position: PositionDTO) => void;
   SendMessage: (playerId: string, playerName: string, message: string) => void;
   PlayerChangeColor: (playerId: string, playerColorDto: PlayerColorDTO) => void;
+  UnwindPlayer: (playerId: string, player: PlayerDTO) => void;
 };
 
 export default class Server {

@@ -11,6 +11,7 @@ import { EntityManager } from './EntityManager';
 import { Lives, UIManager } from './UIManager';
 import { ChatManager } from './ChatManager';
 import { Effect } from '../../effects/Effect';
+import Player from '../../objects/Player';
 
 @singleton()
 export class NetworkManager extends GameObject {
@@ -200,6 +201,30 @@ export class NetworkManager extends GameObject {
       if (!player) return;
 
       player.color = color;
+    });
+
+    this.server.on('UnwindPlayer', (playerId, { lives, position }) => {
+      const player = this.entityManager.getPlayerById(playerId);
+      if (!player) return;
+
+      player.lives = lives;
+      player.position = new Position(position);
+      // if (playerDto.color) player.color = playerDto.color;
+
+      if (!this.entityManager.isCurrentPlayer(playerId)) return;
+
+      this.uiManager.updateLives(lives);
+
+      const newEffect = this._effects[lives];
+      if (this._currentEffect !== newEffect) {
+        this._currentEffect.stop();
+        this._currentEffect = newEffect;
+        this._currentEffect.play();
+      }
+
+      if (lives > 0) return;
+
+      if (player && player instanceof Player && player.isDead()) this.audioManager.setSoundManager('dead');
     });
   }
 }

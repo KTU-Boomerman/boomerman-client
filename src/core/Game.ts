@@ -118,6 +118,8 @@ export class Game extends GameObject implements IKeyboardListener {
         case 'KeyB':
           this.server.invoke('ChangePlayerColor');
           break;
+        case 'KeyA':
+          this.server.invoke('PlayerUnwind');
         default:
           break;
       }
