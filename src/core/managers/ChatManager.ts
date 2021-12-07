@@ -10,7 +10,7 @@ type Message = {
 
 @singleton()
 export class ChatManager implements IManager {
-  private _messageCount: number = 0;
+  private _messageCount = 0;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   messages = document.querySelector('.messages')!;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -41,9 +41,9 @@ export class ChatManager implements IManager {
   public getMessageCount(): number {
     return this._messageCount;
   }
-  
-  public accept(v: IVisitor): void {
-    v.visitChatManager(this);
+
+  public accept(v: IVisitor) {
+    return v.visitChatManager(this);
   }
 
   onMessage(message: Message) {

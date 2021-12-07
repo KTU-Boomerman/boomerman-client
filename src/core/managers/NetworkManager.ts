@@ -15,10 +15,9 @@ import { IManager } from '../../interfaces/IManager';
 import { IVisitor } from '../../interfaces/IVisitor';
 import { StatsVisitor } from '../managers/StatsVisitor';
 
-
 @singleton()
-export class NetworkManager extends GameObject implements IManager{
-  private _effectsCount: number = 0;
+export class NetworkManager extends GameObject implements IManager {
+  private _effectsCount = 0;
   private _aliveEffect: Effect;
   private _injuredEffect: Effect;
   private _heavyInjuryEffect: Effect;
@@ -67,13 +66,13 @@ export class NetworkManager extends GameObject implements IManager{
 
     this._currentEffect = this._aliveEffect;
   }
-  
+
   public getEffectsCount(): number {
     return this._effectsCount;
   }
 
-  public accept(v: IVisitor): void {
-    v.visitNetworkManager(this);
+  public accept(v: IVisitor) {
+    return v.visitNetworkManager(this);
   }
 
   private loadEnemies(players: PlayerDTO[]) {
@@ -180,7 +179,7 @@ export class NetworkManager extends GameObject implements IManager{
         this.audioManager.setSoundManager('dead');
         const visitor = new StatsVisitor();
 
-        this.visitableManagers.forEach(m => console.log(m.accept(visitor)));
+        this.visitableManagers.forEach((m) => console.log(m.accept(visitor)));
       }
     });
 

@@ -16,7 +16,7 @@ import { IVisitor } from '../../interfaces/IVisitor';
 
 @singleton()
 export class EntityManager extends GameObject implements IManager {
-  private _explosionCount: number = 0;
+  private _placedBombCount = 0;
   private entities: GameObject[] = [];
 
   // private playerSprite: Sprite;
@@ -36,15 +36,19 @@ export class EntityManager extends GameObject implements IManager {
     this.explosionSprite = this.spriteFactory.createSprite('explosion') as AnimatedSprite;
   }
 
-  public getExplosionCount(): number {
-    return this._explosionCount;
+  public getPlacedBombCount(): number {
+    return this._placedBombCount;
   }
-  
-  public accept(v: IVisitor): void {
-    v.visitEntityManager(this);
+
+  public accept(v: IVisitor) {
+    return v.visitEntityManager(this);
   }
 
   public add(entity: GameObject): void {
+    if (entity instanceof Bomb) {
+      this._placedBombCount++;
+    }
+
     this.entities.push(entity);
   }
 
@@ -158,7 +162,6 @@ export class EntityManager extends GameObject implements IManager {
     const explosion = new Explosion(this.explosionSprite.clone(), position);
 
     this.add(explosion);
-    this._explosionCount++;
     return explosion;
   }
 }

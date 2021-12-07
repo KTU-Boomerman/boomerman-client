@@ -1,5 +1,5 @@
-import { IVisitor } from "./IVisitor";
+import { IVisitor } from './IVisitor';
 
 export interface IManager {
-    accept: (visitor: IVisitor) => void;
+  accept: (visitor: IVisitor) => string;
 }
