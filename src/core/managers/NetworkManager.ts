@@ -11,10 +11,14 @@ import { EntityManager } from './EntityManager';
 import { Lives, UIManager } from './UIManager';
 import { ChatManager } from './ChatManager';
 import { Effect } from '../../effects/Effect';
+import { IManager } from '../../interfaces/IManager';
+import { IVisitor } from '../../interfaces/IVisitor';
+import { StatsVisitor } from '../managers/StatsVisitor';
 import Player from '../../objects/Player';
 
 @singleton()
-export class NetworkManager extends GameObject {
+export class NetworkManager extends GameObject implements IManager {
+  private _effectsCount = 0;
   private _aliveEffect: Effect;
   private _injuredEffect: Effect;
   private _heavyInjuryEffect: Effect;
@@ -23,6 +27,7 @@ export class NetworkManager extends GameObject {
   private _effects: Record<Lives, Effect>;
 
   private _currentEffect: Effect;
+  private visitableManagers: IManager[] = [];
 
   constructor(
     @inject('Server') private server: Server,
@@ -35,6 +40,7 @@ export class NetworkManager extends GameObject {
     @inject(ChatManager) private chatManager: ChatManager,
   ) {
     super();
+    this.visitableManagers.push(chatManager, entityManager, this);
 
     this._aliveEffect = this.effectManager.createEffect();
 
@@ -60,6 +66,14 @@ export class NetworkManager extends GameObject {
     };
 
     this._currentEffect = this._aliveEffect;
+  }
+
+  public getEffectsCount(): number {
+    return this._effectsCount;
+  }
+
+  public accept(v: IVisitor) {
+    return v.visitNetworkManager(this);
   }
 
   private loadEnemies(players: PlayerDTO[]) {
@@ -157,11 +171,17 @@ export class NetworkManager extends GameObject {
         this._currentEffect.stop();
         this._currentEffect = newEffect;
         this._currentEffect.play();
+        this._effectsCount++;
       }
 
       if (lives > 0) return;
 
-      if (player && player.isDead()) this.audioManager.setSoundManager('dead');
+      if (player && player.isDead()) {
+        this.audioManager.setSoundManager('dead');
+        const visitor = new StatsVisitor();
+
+        this.visitableManagers.forEach((m) => console.log(m.accept(visitor)));
+      }
     });
 
     this.server.on('UpdateScore', (playerId, score) => {

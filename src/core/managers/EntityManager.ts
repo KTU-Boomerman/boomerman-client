@@ -11,9 +11,12 @@ import Wall from '../../objects/walls/Wall';
 import AnimatedSprite from '../../sprite/AnimatedSprite';
 import Sprite from '../../sprite/Sprite';
 import SpriteFactory from '../../sprite/SpriteFactory';
+import { IManager } from '../../interfaces/IManager';
+import { IVisitor } from '../../interfaces/IVisitor';
 
 @singleton()
-export class EntityManager extends GameObject {
+export class EntityManager extends GameObject implements IManager {
+  private _placedBombCount = 0;
   private entities: GameObject[] = [];
 
   // private playerSprite: Sprite;
@@ -33,7 +36,19 @@ export class EntityManager extends GameObject {
     this.explosionSprite = this.spriteFactory.createSprite('explosion') as AnimatedSprite;
   }
 
+  public getPlacedBombCount(): number {
+    return this._placedBombCount;
+  }
+
+  public accept(v: IVisitor) {
+    return v.visitEntityManager(this);
+  }
+
   public add(entity: GameObject): void {
+    if (entity instanceof Bomb) {
+      this._placedBombCount++;
+    }
+
     this.entities.push(entity);
   }
 
@@ -147,7 +162,6 @@ export class EntityManager extends GameObject {
     const explosion = new Explosion(this.explosionSprite.clone(), position);
 
     this.add(explosion);
-
     return explosion;
   }
 }
