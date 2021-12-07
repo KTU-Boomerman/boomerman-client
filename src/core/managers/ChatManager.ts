@@ -1,4 +1,6 @@
 import { inject, singleton } from 'tsyringe';
+import { IManager } from '../../interfaces/IManager';
+import { IVisitor } from '../../interfaces/IVisitor';
 import Server from '../Server';
 
 type Message = {
@@ -7,7 +9,8 @@ type Message = {
 };
 
 @singleton()
-export class ChatManager {
+export class ChatManager implements IManager {
+  private _messageCount: number = 0;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   messages = document.querySelector('.messages')!;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -35,6 +38,13 @@ export class ChatManager {
       this.messageInput.value = '';
     });
   }
+  public getMessageCount(): number {
+    return this._messageCount;
+  }
+  
+  public accept(v: IVisitor): void {
+    v.visitChatManager(this);
+  }
 
   onMessage(message: Message) {
     this.render(message);
@@ -52,5 +62,6 @@ export class ChatManager {
 		`;
     this.messages.appendChild(newMessage);
     this.messages.scrollTop = this.messages.scrollHeight;
+    this._messageCount++;
   }
 }
