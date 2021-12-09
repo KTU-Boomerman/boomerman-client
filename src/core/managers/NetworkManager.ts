@@ -128,12 +128,12 @@ export class NetworkManager extends GameObject {
       if (player && player.isDead()) {
         this.audioManager.setSoundManager('dead');
         const visitor = new StatsVisitor();
-        
+
         for (const manager of this.visitableManagers) {
           const message = {
-            name: "System",
-            message: manager.accept(visitor)
-          }
+            name: 'System',
+            message: manager.accept(visitor),
+          };
 
           this.chatManager.onMessage(message);
         }
