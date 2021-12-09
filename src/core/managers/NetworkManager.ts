@@ -8,25 +8,14 @@ import Server from '../Server';
 import { AudioManager } from './AudioManager';
 import { EffectManager } from './EffectManager';
 import { EntityManager } from './EntityManager';
-import { Lives, UIManager } from './UIManager';
+import { UIManager } from './UIManager';
 import { ChatManager } from './ChatManager';
-import { Effect } from '../../effects/Effect';
 import { IManager } from '../../interfaces/IManager';
-import { IVisitor } from '../../interfaces/IVisitor';
 import { StatsVisitor } from '../managers/StatsVisitor';
 import Player from '../../objects/Player';
 
 @singleton()
-export class NetworkManager extends GameObject implements IManager {
-  private _effectsCount = 0;
-  private _aliveEffect: Effect;
-  private _injuredEffect: Effect;
-  private _heavyInjuryEffect: Effect;
-  private _deathEffect: Effect;
-
-  private _effects: Record<Lives, Effect>;
-
-  private _currentEffect: Effect;
+export class NetworkManager extends GameObject {
   private visitableManagers: IManager[] = [];
 
   constructor(
@@ -40,40 +29,7 @@ export class NetworkManager extends GameObject implements IManager {
     @inject(ChatManager) private chatManager: ChatManager,
   ) {
     super();
-    this.visitableManagers.push(chatManager, entityManager, this);
-
-    this._aliveEffect = this.effectManager.createEffect();
-
-    this._injuredEffect = this.effectManager.createEffect({
-      visual: ['grayscale', 33],
-    });
-
-    this._heavyInjuryEffect = this.effectManager.createEffect({
-      visual: ['grayscale', 66],
-    });
-
-    this._deathEffect = this.effectManager.createEffect({
-      sound: 'death',
-      visual: ['grayscale', 100],
-      animation: 'shake',
-    });
-
-    this._effects = {
-      3: this._aliveEffect,
-      2: this._injuredEffect,
-      1: this._heavyInjuryEffect,
-      0: this._deathEffect,
-    };
-
-    this._currentEffect = this._aliveEffect;
-  }
-
-  public getEffectsCount(): number {
-    return this._effectsCount;
-  }
-
-  public accept(v: IVisitor) {
-    return v.visitNetworkManager(this);
+    this.visitableManagers.push(chatManager, entityManager, effectManager);
   }
 
   private loadEnemies(players: PlayerDTO[]) {
@@ -165,14 +121,7 @@ export class NetworkManager extends GameObject implements IManager {
       if (!this.entityManager.isCurrentPlayer(playerId)) return;
 
       this.uiManager.updateLives(lives);
-
-      const newEffect = this._effects[lives];
-      if (this._currentEffect !== newEffect) {
-        this._currentEffect.stop();
-        this._currentEffect = newEffect;
-        this._currentEffect.play();
-        this._effectsCount++;
-      }
+      this.effectManager.changeEffect(lives);
 
       if (lives > 0) return;
 
@@ -234,13 +183,7 @@ export class NetworkManager extends GameObject implements IManager {
       if (!this.entityManager.isCurrentPlayer(playerId)) return;
 
       this.uiManager.updateLives(lives);
-
-      const newEffect = this._effects[lives];
-      if (this._currentEffect !== newEffect) {
-        this._currentEffect.stop();
-        this._currentEffect = newEffect;
-        this._currentEffect.play();
-      }
+      this.effectManager.changeEffect(lives);
 
       if (lives > 0) return;
 

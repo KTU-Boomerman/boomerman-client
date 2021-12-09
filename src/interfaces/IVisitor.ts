@@ -1,9 +1,9 @@
 import { ChatManager } from '../core/managers/ChatManager';
+import { EffectManager } from '../core/managers/EffectManager';
 import { EntityManager } from '../core/managers/EntityManager';
-import { NetworkManager } from '../core/managers/NetworkManager';
 
 export interface IVisitor {
   visitChatManager: (manager: ChatManager) => string; // messagesSent
   visitEntityManager: (manager: EntityManager) => string; // explosionCount
-  visitNetworkManager: (manager: NetworkManager) => string; // effectsCount
+  visitEffectManager: (manager: EffectManager) => string; // effectsCount
 }
