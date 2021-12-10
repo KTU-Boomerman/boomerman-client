@@ -13,23 +13,22 @@ import Sprite from '../../sprite/Sprite';
 import SpriteFactory from '../../sprite/SpriteFactory';
 import { IManager } from '../../interfaces/IManager';
 import { IVisitor } from '../../interfaces/IVisitor';
+import { UIManager } from './UIManager';
 
 @singleton()
 export class EntityManager extends GameObject implements IManager {
   private _placedBombCount = 0;
   private entities: GameObject[] = [];
 
-  // private playerSprite: Sprite;
-  // private playerDyingSprite: Sprite;
   private enemySprite: Sprite;
   private enemyDyingSprite: Sprite;
   private explosionSprite: AnimatedSprite;
 
-  constructor(@inject(SpriteFactory) private spriteFactory: SpriteFactory) {
+  constructor(@inject(SpriteFactory) private spriteFactory: SpriteFactory, @inject(UIManager) uiManager: UIManager) {
     super();
 
-    // this.playerSprite = this.spriteFactory.createSprite('player');
-    // this.playerDyingSprite = this.spriteFactory.createSprite('playerTransparent');
+    this.add(uiManager);
+
     this.enemySprite = this.spriteFactory.createSprite('enemy');
     this.enemyDyingSprite = this.spriteFactory.createSprite('enemyTransparent');
 

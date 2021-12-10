@@ -1,7 +1,7 @@
-import Renderable from '../interfaces/Renderable';
+import GameObject from '../objects/GameObject';
 import Position from '../objects/Position';
 
-export class Score implements Renderable {
+export class Score extends GameObject {
   RENDER_PRIORITY = 100;
 
   private _position = Position.create(544 / 2, 26);
