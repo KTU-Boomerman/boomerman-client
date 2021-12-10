@@ -62,7 +62,6 @@ export class ChatManager implements IManager {
 		`;
     this.messages.appendChild(newMessage);
     this.messages.scrollTop = this.messages.scrollHeight;
-    if (message.name !== "System")
-      this._messageCount++;
+    if (message.name !== 'System') this._messageCount++;
   }
 }
